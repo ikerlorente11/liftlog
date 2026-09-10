@@ -1,0 +1,947 @@
+{
+  "version": 1,
+  "exportedAt": 1757462400000,
+  "folders": [
+    {
+      "id": "f-ejemplo",
+      "name": "Plan de ejemplo · 3 días",
+      "position": 0
+    }
+  ],
+  "routines": [
+    {
+      "id": "r-dia1",
+      "name": "Día 1 · Cuerpo entero A",
+      "notes": "Empuje horizontal + sentadilla + tirón vertical. Descansa 2-3 min en los básicos y 60-90 s en accesorios. Apunta el peso real que muevas; la app te propondrá la subida al terminar.",
+      "folderId": "f-ejemplo",
+      "position": 0,
+      "createdAt": 1757462400000,
+      "updatedAt": 1757462400000,
+      "exercises": [
+        {
+          "id": "r-dia1-e1",
+          "exerciseId": "Barbell_Squat",
+          "notes": "Profundidad hasta paralela, rodillas siguiendo la punta del pie. Primera serie de aproximación con la barra vacía.",
+          "restSeconds": 180,
+          "supersetId": null,
+          "repRange": {
+            "min": 6,
+            "max": 8
+          },
+          "sets": [
+            {
+              "id": "r-dia1-e1-s1",
+              "type": "warmup",
+              "weightKg": 20,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e1-s2",
+              "type": "normal",
+              "weightKg": 60,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e1-s3",
+              "type": "normal",
+              "weightKg": 60,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e1-s4",
+              "type": "normal",
+              "weightKg": 60,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia1-e2",
+          "exerciseId": "Barbell_Bench_Press_-_Medium_Grip",
+          "notes": "Escápulas retraídas, pies firmes. Baja controlado hasta rozar el pecho.",
+          "restSeconds": 150,
+          "supersetId": null,
+          "repRange": {
+            "min": 6,
+            "max": 8
+          },
+          "sets": [
+            {
+              "id": "r-dia1-e2-s1",
+              "type": "warmup",
+              "weightKg": 20,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e2-s2",
+              "type": "normal",
+              "weightKg": 50,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e2-s3",
+              "type": "normal",
+              "weightKg": 50,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e2-s4",
+              "type": "normal",
+              "weightKg": 50,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia1-e3",
+          "exerciseId": "Wide-Grip_Lat_Pulldown",
+          "notes": "Tira con los codos hacia abajo y atrás; pausa 1 s abajo.",
+          "restSeconds": 90,
+          "supersetId": null,
+          "repRange": {
+            "min": 10,
+            "max": 12
+          },
+          "sets": [
+            {
+              "id": "r-dia1-e3-s1",
+              "type": "normal",
+              "weightKg": 45,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e3-s2",
+              "type": "normal",
+              "weightKg": 45,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e3-s3",
+              "type": "normal",
+              "weightKg": 45,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia1-e4",
+          "exerciseId": "Dumbbell_Shoulder_Press",
+          "notes": "Sentado con respaldo. No bloquees los codos arriba con violencia.",
+          "restSeconds": 90,
+          "supersetId": null,
+          "repRange": {
+            "min": 10,
+            "max": 12
+          },
+          "sets": [
+            {
+              "id": "r-dia1-e4-s1",
+              "type": "normal",
+              "weightKg": 14,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e4-s2",
+              "type": "normal",
+              "weightKg": 14,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e4-s3",
+              "type": "normal",
+              "weightKg": 14,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia1-e5",
+          "exerciseId": "Plank",
+          "notes": "Glúteo apretado y costillas abajo. Si aguantas 60 s fácil, pasa a 3 series de 45 s con lastre.",
+          "restSeconds": 60,
+          "supersetId": null,
+          "sets": [
+            {
+              "id": "r-dia1-e5-s1",
+              "type": "normal",
+              "weightKg": null,
+              "reps": null,
+              "distanceM": null,
+              "durationS": 40,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e5-s2",
+              "type": "normal",
+              "weightKg": null,
+              "reps": null,
+              "distanceM": null,
+              "durationS": 40,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia1-e5-s3",
+              "type": "normal",
+              "weightKg": null,
+              "reps": null,
+              "distanceM": null,
+              "durationS": 40,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "program": {
+        "totalWeeks": 8,
+        "startedAt": null,
+        "phases": [
+          {
+            "weeks": [
+              1,
+              2,
+              3
+            ],
+            "label": "Bloque 1",
+            "note": "Doble progresión: cuando completes todas las series en el tope del rango, sube el peso (2,5 kg en tren superior, 5 kg en pierna) y vuelve al mínimo de repeticiones."
+          },
+          {
+            "weeks": [
+              4
+            ],
+            "label": "Descarga",
+            "deload": true,
+            "note": "Mitad de series con el mismo peso. Sirve para recuperar; no busques récords."
+          },
+          {
+            "weeks": [
+              5,
+              6,
+              7
+            ],
+            "label": "Bloque 2",
+            "note": "Igual que el bloque 1 con los pesos nuevos. Si te estancas dos semanas en un ejercicio, baja un 10 % y vuelve a subir."
+          },
+          {
+            "weeks": [
+              8
+            ],
+            "label": "Descarga",
+            "deload": true,
+            "note": "Última semana: mitad de series. Después, repite el plan o pide uno nuevo."
+          }
+        ]
+      }
+    },
+    {
+      "id": "r-dia2",
+      "name": "Día 2 · Cuerpo entero B",
+      "notes": "Bisagra de cadera + empuje vertical + tirón horizontal. Superserie final de brazos (bíceps y tríceps sin descanso entre ellos).",
+      "folderId": "f-ejemplo",
+      "position": 1,
+      "createdAt": 1757462400000,
+      "updatedAt": 1757462400000,
+      "exercises": [
+        {
+          "id": "r-dia2-e1",
+          "exerciseId": "Romanian_Deadlift",
+          "notes": "Espalda neutra, barra pegada a la pierna, baja hasta notar el isquio (no hasta el suelo).",
+          "restSeconds": 150,
+          "supersetId": null,
+          "repRange": {
+            "min": 8,
+            "max": 10
+          },
+          "sets": [
+            {
+              "id": "r-dia2-e1-s1",
+              "type": "warmup",
+              "weightKg": 30,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e1-s2",
+              "type": "normal",
+              "weightKg": 60,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e1-s3",
+              "type": "normal",
+              "weightKg": 60,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e1-s4",
+              "type": "normal",
+              "weightKg": 60,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia2-e2",
+          "exerciseId": "Standing_Military_Press",
+          "notes": "Glúteo y abdomen apretados para no arquear la lumbar.",
+          "restSeconds": 150,
+          "supersetId": null,
+          "repRange": {
+            "min": 6,
+            "max": 8
+          },
+          "sets": [
+            {
+              "id": "r-dia2-e2-s1",
+              "type": "warmup",
+              "weightKg": 20,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e2-s2",
+              "type": "normal",
+              "weightKg": 32.5,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e2-s3",
+              "type": "normal",
+              "weightKg": 32.5,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e2-s4",
+              "type": "normal",
+              "weightKg": 32.5,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia2-e3",
+          "exerciseId": "Seated_Cable_Rows",
+          "notes": "Pecho alto, lleva el asa al ombligo y junta las escápulas.",
+          "restSeconds": 90,
+          "supersetId": null,
+          "repRange": {
+            "min": 10,
+            "max": 12
+          },
+          "sets": [
+            {
+              "id": "r-dia2-e3-s1",
+              "type": "normal",
+              "weightKg": 45,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e3-s2",
+              "type": "normal",
+              "weightKg": 45,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e3-s3",
+              "type": "normal",
+              "weightKg": 45,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia2-e4",
+          "exerciseId": "Dumbbell_Lunges",
+          "notes": "Zancada larga, rodilla trasera cerca del suelo. Repeticiones por pierna.",
+          "restSeconds": 90,
+          "supersetId": null,
+          "repRange": {
+            "min": 10,
+            "max": 12
+          },
+          "sets": [
+            {
+              "id": "r-dia2-e4-s1",
+              "type": "normal",
+              "weightKg": 10,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e4-s2",
+              "type": "normal",
+              "weightKg": 10,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e4-s3",
+              "type": "normal",
+              "weightKg": 10,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia2-e5",
+          "exerciseId": "Dumbbell_Bicep_Curl",
+          "notes": "Superserie con el siguiente: sin descanso entre curl y extensión, 60 s al acabar los dos.",
+          "restSeconds": 0,
+          "supersetId": "ss-brazos",
+          "repRange": {
+            "min": 12,
+            "max": 15
+          },
+          "sets": [
+            {
+              "id": "r-dia2-e5-s1",
+              "type": "normal",
+              "weightKg": 10,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e5-s2",
+              "type": "normal",
+              "weightKg": 10,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e5-s3",
+              "type": "normal",
+              "weightKg": 10,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia2-e6",
+          "exerciseId": "Triceps_Pushdown_-_Rope_Attachment",
+          "notes": "Codos pegados al cuerpo, abre la cuerda abajo.",
+          "restSeconds": 60,
+          "supersetId": "ss-brazos",
+          "repRange": {
+            "min": 12,
+            "max": 15
+          },
+          "sets": [
+            {
+              "id": "r-dia2-e6-s1",
+              "type": "normal",
+              "weightKg": 20,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e6-s2",
+              "type": "normal",
+              "weightKg": 20,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia2-e6-s3",
+              "type": "normal",
+              "weightKg": 20,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "program": {
+        "totalWeeks": 8,
+        "startedAt": null,
+        "phases": [
+          {
+            "weeks": [
+              1,
+              2,
+              3
+            ],
+            "label": "Bloque 1",
+            "note": "Doble progresión: cuando completes todas las series en el tope del rango, sube el peso (2,5 kg en tren superior, 5 kg en pierna) y vuelve al mínimo de repeticiones."
+          },
+          {
+            "weeks": [
+              4
+            ],
+            "label": "Descarga",
+            "deload": true,
+            "note": "Mitad de series con el mismo peso. Sirve para recuperar; no busques récords."
+          },
+          {
+            "weeks": [
+              5,
+              6,
+              7
+            ],
+            "label": "Bloque 2",
+            "note": "Igual que el bloque 1 con los pesos nuevos. Si te estancas dos semanas en un ejercicio, baja un 10 % y vuelve a subir."
+          },
+          {
+            "weeks": [
+              8
+            ],
+            "label": "Descarga",
+            "deload": true,
+            "note": "Última semana: mitad de series. Después, repite el plan o pide uno nuevo."
+          }
+        ]
+      }
+    },
+    {
+      "id": "r-dia3",
+      "name": "Día 3 · Cuerpo entero C",
+      "notes": "Día de peso corporal y unilateral: dominadas, fondos y prensa. Si no llegas a las dominadas, usa la versión asistida o cambia por jalón.",
+      "folderId": "f-ejemplo",
+      "position": 2,
+      "createdAt": 1757462400000,
+      "updatedAt": 1757462400000,
+      "exercises": [
+        {
+          "id": "r-dia3-e1",
+          "exerciseId": "Leg_Press",
+          "notes": "Pies a la anchura de los hombros, baja hasta 90° sin despegar la cadera.",
+          "restSeconds": 150,
+          "supersetId": null,
+          "repRange": {
+            "min": 10,
+            "max": 12
+          },
+          "sets": [
+            {
+              "id": "r-dia3-e1-s1",
+              "type": "warmup",
+              "weightKg": 60,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e1-s2",
+              "type": "normal",
+              "weightKg": 100,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e1-s3",
+              "type": "normal",
+              "weightKg": 100,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e1-s4",
+              "type": "normal",
+              "weightKg": 100,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia3-e2",
+          "exerciseId": "Pullups",
+          "notes": "Agarre prono algo más ancho que los hombros. Sin lastre (0 kg) hasta hacer 3×8; entonces añade 2,5 kg.",
+          "restSeconds": 150,
+          "supersetId": null,
+          "repRange": {
+            "min": 5,
+            "max": 8
+          },
+          "sets": [
+            {
+              "id": "r-dia3-e2-s1",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 5,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e2-s2",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 5,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e2-s3",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 5,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia3-e3",
+          "exerciseId": "Dips_-_Chest_Version",
+          "notes": "Tronco ligeramente inclinado, baja hasta que el hombro quede a la altura del codo.",
+          "restSeconds": 120,
+          "supersetId": null,
+          "repRange": {
+            "min": 6,
+            "max": 10
+          },
+          "sets": [
+            {
+              "id": "r-dia3-e3-s1",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e3-s2",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e3-s3",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 6,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia3-e4",
+          "exerciseId": "Lying_Leg_Curls",
+          "notes": "Sube rápido, baja en 3 segundos.",
+          "restSeconds": 90,
+          "supersetId": null,
+          "repRange": {
+            "min": 10,
+            "max": 12
+          },
+          "sets": [
+            {
+              "id": "r-dia3-e4-s1",
+              "type": "normal",
+              "weightKg": 30,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e4-s2",
+              "type": "normal",
+              "weightKg": 30,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e4-s3",
+              "type": "normal",
+              "weightKg": 30,
+              "reps": 10,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia3-e5",
+          "exerciseId": "Side_Lateral_Raise",
+          "notes": "Codos ligeramente flexionados, sube hasta la horizontal sin balancear.",
+          "restSeconds": 60,
+          "supersetId": null,
+          "repRange": {
+            "min": 12,
+            "max": 15
+          },
+          "sets": [
+            {
+              "id": "r-dia3-e5-s1",
+              "type": "normal",
+              "weightKg": 8,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e5-s2",
+              "type": "normal",
+              "weightKg": 8,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e5-s3",
+              "type": "normal",
+              "weightKg": 8,
+              "reps": 12,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": "r-dia3-e6",
+          "exerciseId": "Hanging_Leg_Raise",
+          "notes": "Sin balanceo; si cuesta, rodillas flexionadas.",
+          "restSeconds": 60,
+          "supersetId": null,
+          "repRange": {
+            "min": 8,
+            "max": 12
+          },
+          "sets": [
+            {
+              "id": "r-dia3-e6-s1",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e6-s2",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            },
+            {
+              "id": "r-dia3-e6-s3",
+              "type": "normal",
+              "weightKg": 0,
+              "reps": 8,
+              "distanceM": null,
+              "durationS": null,
+              "rpe": null,
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "program": {
+        "totalWeeks": 8,
+        "startedAt": null,
+        "phases": [
+          {
+            "weeks": [
+              1,
+              2,
+              3
+            ],
+            "label": "Bloque 1",
+            "note": "Doble progresión: cuando completes todas las series en el tope del rango, sube el peso (2,5 kg en tren superior, 5 kg en pierna) y vuelve al mínimo de repeticiones."
+          },
+          {
+            "weeks": [
+              4
+            ],
+            "label": "Descarga",
+            "deload": true,
+            "note": "Mitad de series con el mismo peso. Sirve para recuperar; no busques récords."
+          },
+          {
+            "weeks": [
+              5,
+              6,
+              7
+            ],
+            "label": "Bloque 2",
+            "note": "Igual que el bloque 1 con los pesos nuevos. Si te estancas dos semanas en un ejercicio, baja un 10 % y vuelve a subir."
+          },
+          {
+            "weeks": [
+              8
+            ],
+            "label": "Descarga",
+            "deload": true,
+            "note": "Última semana: mitad de series. Después, repite el plan o pide uno nuevo."
+          }
+        ]
+      }
+    }
+  ],
+  "workouts": [],
+  "customExercises": [],
+  "measurements": [],
+  "settings": {}
+}

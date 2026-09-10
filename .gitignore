@@ -1,0 +1,22 @@
+node_modules/
+.expo/
+dist/
+android/
+ios/
+*.jks
+*.log
+.DS_Store
+*.apk
+*.aab
+.vscode/
+credentials.json
+credentials/
+
+# graphify - grafo regenerable, no fuente
+graphify-out/
+
+# Imagenes medicas personales (solo local)
+docs/Ecografia.zip
+
+# Datos personales e imágenes con licencia de uso privado: nunca al repo público
+private/
