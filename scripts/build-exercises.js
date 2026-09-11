@@ -150,5 +150,5 @@ const dest = path.join(__dirname, '..', 'src', 'data', 'exercises.json')
 fs.writeFileSync(dest, JSON.stringify(out))
 console.log('exercises:', out.length, '->', dest, Math.round(fs.statSync(dest).size / 1024) + 'KB')
 
-// El catálogo legible para la IA (docs/catalogo-ejercicios.md) se regenera con el JSON.
+// El fichero para la IA (docs/generar-plan-con-ia.md, especificación + catálogo) se regenera con el JSON.
 require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build-exercise-catalog.js')], { stdio: 'inherit' })

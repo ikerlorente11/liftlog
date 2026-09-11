@@ -101,7 +101,7 @@ function catalogMatches(name) {
 // ---------- customExercises ----------
 const CUSTOM_LIMIT = 5
 if (data.customExercises.length > CUSTOM_LIMIT) {
-  warn(`${data.customExercises.length} ejercicios personalizados: para un plan normal es demasiado; casi todo debería salir del catálogo (docs/catalogo-ejercicios.md)`)
+  warn(`${data.customExercises.length} ejercicios personalizados: para un plan normal es demasiado; casi todo debería salir del catálogo (al final de docs/generar-plan-con-ia.md)`)
 }
 for (const ex of data.customExercises) {
   const where = `customExercises["${ex.id}"]`

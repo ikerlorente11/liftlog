@@ -1,15 +1,18 @@
-// Genera docs/catalogo-ejercicios.md a partir de src/data/exercises.json: la lista
-// completa de ids de ejercicio que la app reconoce, agrupada por músculo, para
-// dársela a una IA junto con docs/generar-plan-con-ia.md. Sin este listado la IA
+// Genera docs/generar-plan-con-ia.md: el ÚNICO fichero que se adjunta a una IA para que
+// escriba un plan en el formato de LiftLog. Es la especificación escrita a mano
+// (scripts/data/plan-ia-spec.md) seguida del catálogo completo de ids de ejercicio
+// sacado de src/data/exercises.json, agrupado por músculo. Sin el catálogo la IA
 // tiende a inventarse ejercicios personalizados para todo.
 //
-// Uso: node scripts/build-exercise-catalog.js
-// (se ejecuta solo al final de build-exercises.js)
+// Uso: node scripts/build-exercise-catalog.js   (npm run catalog)
+// (se ejecuta solo al final de build-exercises.js). Edita la especificación en
+// scripts/data/plan-ia-spec.md, nunca en docs/.
 const fs = require('fs')
 const path = require('path')
 
 const src = path.join(__dirname, '..', 'src', 'data', 'exercises.json')
-const out = path.join(__dirname, '..', 'docs', 'catalogo-ejercicios.md')
+const spec = path.join(__dirname, 'data', 'plan-ia-spec.md')
+const out = path.join(__dirname, '..', 'docs', 'generar-plan-con-ia.md')
 const exercises = JSON.parse(fs.readFileSync(src, 'utf8'))
 
 const MUSCLE_ES = {
@@ -34,9 +37,15 @@ for (const e of exercises) {
 const collator = new Intl.Collator('es')
 
 const lines = []
-lines.push('# Catálogo de ejercicios de LiftLog (ids válidos para `exerciseId`)')
+lines.push('<!-- GENERADO por scripts/build-exercise-catalog.js a partir de scripts/data/plan-ia-spec.md')
+lines.push('     y src/data/exercises.json. No editar a mano: edita la especificación y ejecuta npm run catalog. -->')
+lines.push(fs.readFileSync(spec, 'utf8').trimEnd())
 lines.push('')
-lines.push(`> Generado por \`scripts/build-exercise-catalog.js\` desde \`src/data/exercises.json\` (${exercises.length} ejercicios). No editar a mano.`)
+lines.push('---')
+lines.push('')
+lines.push('## Catálogo de ejercicios (ids válidos para `exerciseId`)')
+lines.push('')
+lines.push(`> ${exercises.length} ejercicios, los que la app ya trae con foto e instrucciones.`)
 lines.push('>')
 lines.push('> **Para la IA:** todo `exerciseId` de un plan debe salir de esta lista. Crea un ejercicio en')
 lines.push('> `customExercises` solo si aquí no existe nada equivalente (busca por nombre en español y en')
@@ -44,7 +53,7 @@ lines.push('> inglés, y por variantes: barra/mancuerna/máquina/polea, unilater
 lines.push('>')
 lines.push('> Formato: `id` — nombre en español (nombre en inglés) · cómo se registra · material.')
 lines.push('')
-lines.push('## Índice')
+lines.push('### Índice')
 lines.push('')
 for (const m of ORDER) {
   const n = byMuscle.get(m)?.length ?? 0
@@ -54,7 +63,7 @@ lines.push('')
 for (const m of ORDER) {
   const list = byMuscle.get(m)
   if (!list?.length) continue
-  lines.push(`## ${MUSCLE_ES[m]}`)
+  lines.push(`### ${MUSCLE_ES[m]}`)
   lines.push('')
   list.sort((a, b) => collator.compare(a.nameEs, b.nameEs))
   for (const e of list) {
@@ -65,4 +74,4 @@ for (const m of ORDER) {
 }
 
 fs.writeFileSync(out, lines.join('\n'), 'utf8')
-console.log(`✅ ${path.relative(process.cwd(), out)}: ${exercises.length} ejercicios en ${byMuscle.size} grupos`)
+console.log(`✅ ${path.relative(process.cwd(), out)}: especificación + ${exercises.length} ejercicios en ${byMuscle.size} grupos`)

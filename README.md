@@ -16,20 +16,19 @@ Ajustes → Importar copia de seguridad.
 
 ## 🤖 Generar tu plan con una IA
 
-La app no incluye planes: los importas desde un JSON. Para no escribirlo a mano, dale a una IA
-(Claude, ChatGPT, Gemini…) **dos ficheros de este repo** y tu plan:
+La app no incluye planes: los importas desde un JSON. Para no escribirlo a mano, hazlo en dos
+tiempos con una IA (Claude, ChatGPT, Gemini…) y **un solo fichero de este repo**:
+[`docs/generar-plan-con-ia.md`](docs/generar-plan-con-ia.md), que lleva las instrucciones, la
+especificación del formato y el catálogo de los ~890 ejercicios de la app con su `id`.
 
-| Fichero | Qué es |
-|---|---|
-| [`docs/generar-plan-con-ia.md`](docs/generar-plan-con-ia.md) | Especificación del formato e instrucciones de trabajo para la IA: rutinas, series, superseries, rangos de repeticiones, programas por semanas, medidas. |
-| [`docs/catalogo-ejercicios.md`](docs/catalogo-ejercicios.md) | Los ~890 ejercicios que la app ya trae, con su `id`, agrupados por músculo. **Imprescindible**: sin él la IA se inventa ejercicios personalizados para todo y salen sin foto ni instrucciones. |
-
-Pasos:
-
-1. Adjunta los dos ficheros al chat y describe tu plan (días, material, ejercicios, series,
-   pesos de partida, progresión por semanas si la hay). Un PDF o una foto del plan también vale.
-2. Pídele: *"Genera el JSON de copia de seguridad de LiftLog según la especificación, usando
-   solo `exerciseId` del catálogo; dime qué personalizados has creado y por qué"*.
+1. **Planifica tu entrenamiento con la IA.** Cuéntale objetivo, nivel, días y tiempo por sesión,
+   material, lesiones y preferencias, y discute con ella ejercicios, series, pesos de partida y
+   progresión por semanas hasta que el plan te convenza. Si ya tienes un plan (PDF, foto, texto),
+   dáselo y listo.
+2. **Con el plan cerrado, adjunta `docs/generar-plan-con-ia.md`** al mismo chat y pídele:
+   *"Genera este plan en el formato de LiftLog siguiendo las instrucciones del archivo adjunto y
+   usando solo los ejercicios de su catálogo; dime qué personalizados has creado y por qué"*.
+   Si la IA no admite adjuntos, pega el contenido del fichero.
 3. Guarda la respuesta como `mi-plan.json` y valídala (opcional, necesita el repo):
 
    ```bash
@@ -42,8 +41,9 @@ Pasos:
    por id sin borrar nada; si más adelante regeneras el plan con los mismos ids, las rutinas se
    actualizan en su sitio (salvo las que hayas cambiado en el móvil después, que se conservan).
 
-El catálogo se regenera con `npm run catalog` (lo hace también `build-exercises.js`), así siempre
-refleja `src/data/exercises.json`.
+El fichero se genera con `npm run catalog` (lo hace también `build-exercises.js`) a partir de la
+especificación `scripts/data/plan-ia-spec.md` y de `src/data/exercises.json`: edita la
+especificación ahí, nunca en `docs/`.
 
 ## ✨ Funcionalidades
 
@@ -88,7 +88,7 @@ Regenerar `src/data/exercises.json`:
 ```bash
 node scripts/build-exercises.js scripts/data/ex.json scripts/data/names_es.json
 # (las instrucciones ES se toman de scripts/data/instructions_es.json; al acabar regenera
-#  docs/catalogo-ejercicios.md, el listado de ids para generar planes con IA)
+#  docs/generar-plan-con-ia.md, el fichero para generar planes con IA)
 ```
 
 ## 🧪 Build de desarrollo (LiftLog Dev)
@@ -163,9 +163,9 @@ src/
   components/   EntryEditor · ExercisePicker · ExerciseList · WorkoutCard · RoutineCard · RestTimerBar · Charts
   ui/           primitives · sheets · ExerciseImage
   store/ db/ lib/ data/ theme.ts types.ts
-scripts/        build-exercises.js · build-exercise-catalog.js · make-icons.js · make-store-assets.js · validate-backup.js · data/ (fuentes + plan-ejemplo-backup.json)
+scripts/        build-exercises.js · build-exercise-catalog.js · make-icons.js · make-store-assets.js · validate-backup.js · data/ (fuentes + plan-ia-spec.md + plan-ejemplo-backup.json)
 private/        (ignorada por git) datos personales, planes propios y fotos de uso privado
-docs/           generar-plan-con-ia.md · catalogo-ejercicios.md · creditos-imagenes.md
+docs/           generar-plan-con-ia.md (generado) · creditos-imagenes.md
 ```
 
 ## ✅ Tests
@@ -174,7 +174,7 @@ docs/           generar-plan-con-ia.md · catalogo-ejercicios.md · creditos-ima
 npm test          # vitest: 1RM, volumen, PRs, récords, formato de series/tiempos, semanas, composición, configuración de medidas
 npm run typecheck # tsc --noEmit
 npm run validate -- fichero.json   # valida una copia de seguridad / plan antes de importarlo
-npm run catalog                    # regenera docs/catalogo-ejercicios.md
+npm run catalog                    # regenera docs/generar-plan-con-ia.md (especificación + catálogo)
 ```
 
 ## 🚀 Desarrollo y build

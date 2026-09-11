@@ -2,6 +2,14 @@
 
 Formato: versión (versionCode) — fecha.
 
+## Docs — 2026-09-11
+- **Un solo fichero para generar planes con IA** (feedback del 11/09: "quiero simplemente todo en
+  un archivo"). `docs/generar-plan-con-ia.md` lleva ahora las instrucciones, la especificación y
+  el catálogo de ejercicios al final; desaparece `docs/catalogo-ejercicios.md`. La especificación
+  se edita en `scripts/data/plan-ia-spec.md` y `npm run catalog` genera el fichero de docs. El
+  README y el propio fichero explican el flujo en dos tiempos: planificar el entrenamiento con la
+  IA y, con el plan cerrado, adjuntar el fichero y pedirle el JSON.
+
 ## 1.3.0 OTA — 2026-09-10 (canal production, runtime 1.3.0)
 - **El teclado ya no tapa las series del final** (feedback del 10/09: "al desplegarse el teclado este
   tapa la pantalla y no se ve lo que estás editando"). Con edge-to-edge Android no redimensiona
