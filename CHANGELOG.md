@@ -3,6 +3,8 @@
 Formato: versión (versionCode) — fecha.
 
 ## 1.3.0 OTA — 2026-09-24 (canal production, runtime 1.3.0)
+OTA publicada el 24/09 (grupo 69cfd2a6, commit 184d0af).
+
 - **Cualquier masa de composición se puede apuntar en %** (feedback del 24/09: "la báscula de
   casa me lo da en % y la app solo me deja meterlo en kg en la mayoría de casos"). Antes solo la
   grasa tenía el chip %; ahora lo tienen también masa muscular, agua, proteínas, mineral óseo y
