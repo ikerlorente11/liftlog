@@ -1,11 +1,13 @@
-// Ajustes: perfil, unidades, tema, temporizador, copia de seguridad, borrar datos.
+// Ajustes: perfil, unidades, tema, temporizador, pausa del plan, copia de seguridad, borrar datos.
+import DateTimePicker from '@react-native-community/datetimepicker'
 import * as DocumentPicker from 'expo-document-picker'
 import { File, Paths } from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
-import { fmtDuration } from '../../src/lib/format'
+import { fmtDayMonth, fmtDuration, startOfDay } from '../../src/lib/format'
+import { isPaused } from '../../src/lib/program'
 import { exportAll, type BackupData } from '../../src/db/database'
 import { REST_OPTIONS } from '../../src/components/EntryEditor'
 import { ExportDialog, type ExportParts } from '../../src/components/ExportDialog'
@@ -20,13 +22,17 @@ export default function SettingsScreen() {
   const router = useRouter()
   const settings = useSettings((s) => s.settings)
   const update = useSettings((s) => s.update)
-  const { importBackup, wipeAll, workouts, routines, folders, measurements } = useData()
-  const [sheet, setSheet] = useState<'theme' | 'weight' | 'distance' | 'rest' | null>(null)
+  const { importBackup, wipeAll, workouts, routines, folders, measurements, pausePrograms, pauseProgramsUntil, resumePrograms } = useData()
+  const [sheet, setSheet] = useState<'theme' | 'weight' | 'distance' | 'rest' | 'pause' | null>(null)
+  // Planes por semanas: cuántos hay y hasta cuándo están en pausa (el más lejano)
+  const programs = routines.filter((r) => r.program?.phases.length)
+  const pausedUntil = programs.reduce<number | null>((acc, r) => (isPaused(r.program!) && (acc == null || r.program!.pausedUntil! > acc) ? r.program!.pausedUntil! : acc), null)
   const [namePrompt, setNamePrompt] = useState(false)
   const [confirm, setConfirm] = useState<{ title: string; message: string; label: string; onOk: () => void | Promise<void> } | null>(null)
   const [msg, setMsg] = useState<string | null>(null)
   const [pendingImport, setPendingImport] = useState<BackupData | null>(null)
   const [exportSheet, setExportSheet] = useState(false)
+  const [pauseDate, setPauseDate] = useState(false)
 
   const exportBackup = async (parts: ExportParts) => {
     try {
@@ -99,6 +105,9 @@ export default function SettingsScreen() {
         <Group title="Entrenamiento">
           <ListRow icon="timer-outline" label="Descanso por defecto" value={settings.defaultRestSeconds ? fmtDuration(settings.defaultRestSeconds) : 'Desactivado'} onPress={() => setSheet('rest')} />
           <ListRow icon="phone-portrait-outline" label="Vibrar al acabar el descanso" right={<Switch value={settings.restTimerVibrate} onValueChange={(v) => void update({ restTimerVibrate: v })} trackColor={{ true: c.primary }} />} />
+          {programs.length ? (
+            <ListRow icon="pause-circle-outline" label="Pausar el plan" value={pausedUntil != null ? `En pausa · vuelve a contar el ${fmtDayMonth(pausedUntil)}` : `${programs.length} rutinas con plan`} onPress={() => setSheet('pause')} />
+          ) : null}
         </Group>
         <Group title="Datos">
           <ListRow icon="cloud-upload-outline" label="Exportar copia de seguridad" value={`${workouts.length} entrenos · ${routines.length} rutinas`} onPress={() => setExportSheet(true)} />
@@ -113,6 +122,39 @@ export default function SettingsScreen() {
       <OptionSheet visible={sheet === 'weight'} onClose={() => setSheet(null)} title="Unidad de peso" value={settings.weightUnit} options={[{ value: 'kg', label: 'Kilogramos (kg)' }, { value: 'lb', label: 'Libras (lb)' }]} onSelect={(v) => void update({ weightUnit: v })} />
       <OptionSheet visible={sheet === 'distance'} onClose={() => setSheet(null)} title="Unidad de distancia" value={settings.distanceUnit} options={[{ value: 'km', label: 'Kilómetros (km)' }, { value: 'mi', label: 'Millas (mi)' }]} onSelect={(v) => void update({ distanceUnit: v })} />
       <OptionSheet visible={sheet === 'rest'} onClose={() => setSheet(null)} title="Descanso por defecto" value={settings.defaultRestSeconds} options={REST_OPTIONS.map((s) => ({ value: s, label: s === 0 ? 'Desactivado' : fmtDuration(s) }))} onSelect={(v) => void update({ defaultRestSeconds: v })} />
+      <OptionSheet
+        visible={sheet === 'pause'}
+        onClose={() => setSheet(null)}
+        title={pausedUntil != null ? `Plan en pausa · vuelve a contar el ${fmtDayMonth(pausedUntil)} (incluido)` : 'Pausar el plan'}
+        value={null}
+        options={[
+          { value: 'date' as const, label: pausedUntil != null ? 'Cambiar el día de vuelta…' : 'Hasta un día concreto…', sub: 'Eliges el primer día que vuelve a contar (ese día incluido). Lo que entrenes antes se registra pero no cuenta para el plan; el plan retoma la misma semana ese día.' },
+          { value: 'w1' as const, label: pausedUntil != null ? 'Alargar 1 semana' : '1 semana', sub: pausedUntil != null ? undefined : 'Vuelve a contar el próximo lunes.' },
+          { value: 'w2' as const, label: pausedUntil != null ? 'Alargar 2 semanas' : '2 semanas' },
+          ...(pausedUntil != null ? [{ value: 'resume' as const, label: 'Reanudar ahora', sub: 'Esta semana vuelve a contar como la semana mostrada.' }] : []),
+        ]}
+        onSelect={(v) => {
+          setSheet(null)
+          if (v === 'date') { setPauseDate(true); return }
+          const done = (m: string) => setMsg(m)
+          if (v === 'resume') void resumePrograms(settings.weekStartsMonday).then(() => done('Plan reanudado.'))
+          else void pausePrograms(v === 'w1' ? 1 : 2, settings.weekStartsMonday).then(() => done(`Plan en pausa ${v === 'w1' ? '1 semana' : '2 semanas'} más.`))
+        }}
+      />
+      {pauseDate ? (
+        <DateTimePicker
+          value={new Date(pausedUntil ?? startOfDay(Date.now()) + 7 * 24 * 3600 * 1000)}
+          mode="date"
+          display="default"
+          minimumDate={new Date(startOfDay(Date.now()) + 24 * 3600 * 1000)}
+          onChange={(event, selected) => {
+            setPauseDate(false)
+            if (event.type !== 'set' || !selected) return
+            const until = startOfDay(selected.getTime())
+            void pauseProgramsUntil(until, settings.weekStartsMonday).then(() => setMsg(`Plan en pausa: vuelve a contar el ${fmtDayMonth(until)} (ese día incluido).`))
+          }}
+        />
+      ) : null}
       <PromptDialog visible={namePrompt} title="Tu nombre" initialValue={settings.userName} placeholder="Nombre" onCancel={() => setNamePrompt(false)} onConfirm={(v) => { void update({ userName: v.trim() }); setNamePrompt(false) }} />
       <ConfirmDialog visible={!!confirm} title={confirm?.title ?? ''} message={confirm?.message} confirmLabel={confirm?.label} destructive onCancel={() => setConfirm(null)} onConfirm={async () => { const fn = confirm?.onOk; setConfirm(null); await fn?.() }} />
       <ExportDialog

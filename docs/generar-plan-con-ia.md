@@ -50,6 +50,10 @@ su sitio en vez de duplicarse. Dos matices:
   Para imponer la del fichero, su `updatedAt` debe ser más reciente.
 - Si la rutina ya había arrancado su programa por semanas, Fusionar conserva la fecha de inicio
   aunque el fichero traiga `startedAt: null`.
+- Los planes se pueden **pausar** desde la app (Ajustes → Pausar el plan) hasta un día concreto:
+  lo entrenado hasta entonces no cuenta y el plan retoma la misma semana al volver. El campo
+  `program.pausedUntil` (día de reanudación) lo gestiona la app; un plan generado no lo lleva (o
+  va `null`) y Fusionar conserva la pausa del móvil.
 
 
 ## Instrucciones para la IA

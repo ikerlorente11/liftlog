@@ -86,6 +86,13 @@ export interface RoutineProgram {
   totalWeeks: number
   /** Inicio de la semana 1 (timestamp); null = el plan aún no ha empezado */
   startedAt: number | null
+  /**
+   * Plan en pausa hasta este día (timestamp a las 00:00): lo anterior no cuenta
+   * (vacaciones, viajes, lesión). Las rutinas se siguen usando, pero la app muestra
+   * la semana en la que se reanudará y no propone cambios en la rutina.
+   * startedAt ya va desplazado por las semanas de calendario pausadas.
+   */
+  pausedUntil?: number | null
   phases: ProgramPhase[]
 }
 

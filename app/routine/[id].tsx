@@ -6,6 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { restLabel } from '../../src/components/EntryEditor'
 import { useSupersetIndex } from '../../src/components/useEntryHelpers'
+import { fmtDayMonth } from '../../src/lib/format'
 import { effectiveTargets, phaseForWeek } from '../../src/lib/program'
 import { fmtSet } from '../../src/lib/stats'
 import { useData } from '../../src/store/dataStore'
@@ -74,6 +75,11 @@ export default function RoutineDetail() {
             {!targets.started ? (
               <Text style={{ color: c.textMuted, fontSize: 13, lineHeight: 18 }}>
                 El plan empezará en la semana {targets.week} al iniciar el primer entreno. Los objetivos de abajo son los de esa semana.
+              </Text>
+            ) : null}
+            {targets.paused && targets.pausedUntil != null ? (
+              <Text style={{ color: c.warning, fontSize: 13, lineHeight: 18 }}>
+                Plan en pausa: vuelve a contar el {fmtDayMonth(targets.pausedUntil)} (ese día incluido). Lo que entrenes antes se registra pero no cuenta para el plan; usa los objetivos de la semana {targets.week} sin subir cargas. Puedes cambiar el día o reanudarlo desde Ajustes.
               </Text>
             ) : null}
             {targets.phase?.note ? <Text style={{ color: c.textMuted, fontSize: 13, lineHeight: 18 }}>{targets.phase.note}</Text> : null}

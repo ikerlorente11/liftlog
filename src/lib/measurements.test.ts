@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Measurement } from '../types'
-import { composition, fmtComposition, kgFromPercent, percentOfWeight, weightNear } from './measurements'
+import { composition, fmtComposition, kgFromPercent, percentOfWeight, weightMeasurementNear, weightNear } from './measurements'
 
 const d = (s: string) => new Date(s + 'T12:00:00').getTime()
 const ms: Measurement[] = [
@@ -33,3 +33,18 @@ describe('composition', () => {
     expect(fmtComposition({ pct: 20, kg: null }, 'kg')).toBe('20 %')
   })
 })
+
+describe('weightMeasurementNear', () => {
+  const w = (date: string, value: number, source = 'home'): Measurement => ({ id: date + source, key: 'weight', value, date: d(date), source })
+  it('devuelve la medida completa (valor y fecha) del mismo origen más cercana', () => {
+    const ms = [w('2026-09-20', 90), w('2026-09-23', 91), w('2026-09-23', 89, 'official')]
+    const m = weightMeasurementNear(ms, 'home', d('2026-09-24'))
+    expect(m?.value).toBe(91)
+    expect(m?.date).toBe(d('2026-09-23'))
+    expect(weightMeasurementNear(ms, 'official', d('2026-09-24'))?.value).toBe(89)
+  })
+  it('null fuera de la tolerancia', () => {
+    expect(weightMeasurementNear([w('2026-09-10', 90)], 'home', d('2026-09-24'))).toBeNull()
+  })
+})
+

@@ -348,6 +348,10 @@ export async function importAll(data: BackupData, mode: 'merge' | 'replace'): Pr
       if (r.program && r.program.startedAt == null && prev?.program?.startedAt != null) {
         routine = { ...r, program: { ...r.program, startedAt: prev.program.startedAt } }
       }
+      // ...ni una pausa activa si el archivo no dice nada de pausas.
+      if (routine.program && routine.program.pausedUntil === undefined && prev?.program?.pausedUntil != null) {
+        routine = { ...routine, program: { ...routine.program, pausedUntil: prev.program.pausedUntil } }
+      }
     }
     await saveRoutine(routine)
   }

@@ -2,6 +2,28 @@
 
 Formato: versión (versionCode) — fecha.
 
+## 1.3.0 OTA — 2026-09-24 (canal production, runtime 1.3.0)
+- **Cualquier masa de composición se puede apuntar en %** (feedback del 24/09: "la báscula de
+  casa me lo da en % y la app solo me deja meterlo en kg en la mayoría de casos"). Antes solo la
+  grasa tenía el chip %; ahora lo tienen también masa muscular, agua, proteínas, mineral óseo y
+  cualquier campo de composición en kg que añadas. El diálogo enseña la conversión en vivo con
+  el peso del mismo origen más cercano a la fecha elegida (±3 días): "27 % de 90,7 kg = 24,5 kg.
+  Se guarda en kg", avisa si el peso es de otro día y, si no hay peso de ese origen, lo dice y no
+  deja guardar hasta apuntarlo o teclear en kg. La medida se guarda siempre en kg, como hasta
+  ahora, y la pantalla la muestra como "% (kg)".
+- **Pausar el plan** (feedback del 24/09, vuelta de vacaciones con dos semanas a medias: "voy a
+  hacer ejercicio pero no quiero que cuenten como semanas efectivas"). En Ajustes → Entrenamiento
+  → "Pausar el plan" se elige en el calendario el primer día que vuelve a contar (los textos
+  dicen siempre "vuelve a contar el X, ese día incluido") o 1-2 semanas enteras, y
+  todos los planes por semanas quedan en pausa: lo que se entrena hasta ese día se registra
+  igual pero no cuenta para el plan. La app sigue mostrando la semana en la que se reanudará
+  (tarjeta "Semana 5/24 · en pausa, vuelve el 5 oct") y el plan retoma esa misma semana ese día
+  (si cae a mitad de semana, esa semana entera es la de vuelta). Con la pausa activa se puede
+  cambiar la fecha, alargar o "Reanudar ahora". Al acabar un entreno en pausa no se propone
+  guardar lo de hoy ni subir cargas. Cambiar la semana a mano en una rutina quita su pausa.
+  Nuevo campo opcional `program.pausedUntil` (día de reanudación a las 00:00; el validador lo
+  acepta y Fusionar conserva la pausa del móvil si el archivo no trae el campo).
+
 ## Docs — 2026-09-11
 - **Un solo fichero para generar planes con IA** (feedback del 11/09: "quiero simplemente todo en
   un archivo"). `docs/generar-plan-con-ia.md` lleva ahora las instrucciones, la especificación y

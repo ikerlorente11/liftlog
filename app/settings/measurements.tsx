@@ -11,7 +11,7 @@ import { MultiLineChart } from '../../src/components/Charts'
 import { MeasurementDialog } from '../../src/components/MeasurementDialog'
 import { fmtDateShort, fmtDayMonth, fromDisplayWeight, toDisplayWeight } from '../../src/lib/format'
 import { GROUP_INFO, type FieldGroup, fieldLabel, fieldUnit, isMassField, isPercentOfWeightField, sourceLabel, visibleFields, visibleSources } from '../../src/lib/measurementConfig'
-import { composition, compositionParts, kgFromPercent, weightNear } from '../../src/lib/measurements'
+import { composition, compositionParts, kgFromPercent, weightMeasurementNear, weightNear } from '../../src/lib/measurements'
 import { useData } from '../../src/store/dataStore'
 import type { Measurement, MeasurementSource } from '../../src/types'
 import { useSettings } from '../../src/store/settingsStore'
@@ -164,10 +164,16 @@ export default function MeasurementsScreen() {
       </ScrollView>
       <MeasurementDialog
         visible={prompt}
-        label={key === 'fat_mass' ? fieldLabel(cfg, key) : `${fieldLabel(cfg, key)} (${unit})`}
+        label={compKey ? fieldLabel(cfg, key) : `${fieldLabel(cfg, key)} (${unit})`}
         unit={unit}
-        // La grasa se puede teclear como la da la báscula (%) y se guarda en kg con el peso de ese día.
-        unitOptions={key === 'fat_mass' ? ['%', unit] : undefined}
+        // Las masas de composición (grasa, músculo, agua, proteínas, mineral óseo…) se
+        // pueden teclear como las da la báscula (% del peso) y se guardan en kg con el
+        // peso del mismo origen de ese día (±3 días).
+        unitOptions={compKey ? ['%', unit] : undefined}
+        weightFor={compKey ? (src, date) => {
+          const w = weightMeasurementNear(measurements, src, date)
+          return w ? { value: toDisplayWeight(w.value, settings.weightUnit), date: w.date } : null
+        } : undefined}
         sources={sources}
         defaultSource={source}
         onCancel={() => setPrompt(false)}
@@ -175,10 +181,10 @@ export default function MeasurementsScreen() {
           // Recordamos el último origen usado para no repetir la elección.
           setSource(src)
           let valueKg = isMass ? fromDisplayWeight(n, settings.weightUnit) : n
-          if (key === 'fat_mass' && unitUsed === '%') {
+          if (compKey && unitUsed === '%') {
             const w = weightNear(measurements, src, date)
             if (w == null) {
-              Alert.alert('Falta el peso', `Para guardar la grasa en % necesito el peso de ${sourceLabel(cfg, src).toLowerCase()} de ese día (±3 días). Apunta primero el peso o introduce la grasa en ${unit}.`)
+              Alert.alert('Falta el peso', `Para guardar ${fieldLabel(cfg, key).toLowerCase()} en % necesito el peso de ${sourceLabel(cfg, src).toLowerCase()} de ese día (±3 días). Apunta primero el peso o introduce el valor en ${unit}.`)
               return
             }
             valueKg = kgFromPercent(n, w)

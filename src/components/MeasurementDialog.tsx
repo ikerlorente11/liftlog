@@ -1,5 +1,7 @@
 // Diálogo para registrar una medida: valor, origen (báscula de casa o
 // nutricionista) y fecha. La fecha es editable para poder meter históricos.
+// Las masas de composición (grasa, músculo, agua…) se pueden teclear en % del
+// peso: el diálogo enseña la conversión con el peso de ese origen y fecha.
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useEffect, useMemo, useState } from 'react'
 import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
@@ -31,12 +33,18 @@ function parseText(t: string): number | null {
   return d.getTime()
 }
 
-export function MeasurementDialog({ visible, label, unit, unitOptions, sources, defaultSource, onCancel, onConfirm }: {
+export function MeasurementDialog({ visible, label, unit, unitOptions, weightFor, sources, defaultSource, onCancel, onConfirm }: {
   visible: boolean
   label: string
   unit: string
   /** Unidades alternativas para teclear el valor (p. ej. la grasa en % o en kg); la primera es la que se ofrece por defecto. */
   unitOptions?: string[]
+  /**
+   * Para los campos que admiten %: peso de referencia (kg, ya en la unidad de
+   * pantalla) del origen elegido cerca de la fecha, o null si no hay. Con él el
+   * diálogo muestra la conversión en vivo y no deja guardar un % sin peso.
+   */
+  weightFor?: (source: MeasurementSource, date: number) => { value: number; date: number } | null
   /** Orígenes visibles (configurables por el usuario). */
   sources: MeasurementSourceDef[]
   defaultSource?: MeasurementSource
@@ -91,7 +99,21 @@ export function MeasurementDialog({ visible, label, unit, unitOptions, sources, 
     return null
   }, [dateText, today])
 
-  const canSave = valueValid && dateValid && !isFuture
+  // Conversión % → kg en vivo con el peso del origen y la fecha elegidos
+  const usingPct = unitUsed === '%'
+  const refWeight = usingPct && weightFor && dateValid ? weightFor(source, parseText(dateText) as number) : null
+  const pctHint = useMemo(() => {
+    if (!usingPct || !weightFor || !dateValid) return null
+    if (!refWeight) return { text: `Sin peso de este origen a ±3 días de esa fecha. Apunta primero el peso o teclea el valor en ${unit}.`, error: true }
+    const day = toText(refWeight.date)
+    const sameDay = parseText(dateText) === noon(refWeight.date)
+    const w = String(Math.round(refWeight.value * 10) / 10).replace('.', ',')
+    if (!valueValid) return { text: `Se guardará en ${unit} sobre el peso ${sameDay ? 'de ese día' : `del ${day}`}: ${w} ${unit}.`, error: false }
+    const kg = String(Math.round((num / 100) * refWeight.value * 10) / 10).replace('.', ',')
+    return { text: `${value.trim()} % de ${w} ${unit} ${sameDay ? '' : `(peso del ${day}) `}= ${kg} ${unit}. Se guarda en ${unit}.`, error: false }
+  }, [usingPct, weightFor, dateValid, refWeight, dateText, valueValid, num, value, unit])
+
+  const canSave = valueValid && dateValid && !isFuture && !(usingPct && weightFor && !refWeight)
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel} statusBarTranslucent>
@@ -115,6 +137,9 @@ export function MeasurementDialog({ visible, label, unit, unitOptions, sources, 
               </Pressable>
             )) : null}
           </View>
+          {pctHint ? (
+            <Text style={{ color: pctHint.error ? c.danger : c.textFaint, fontSize: 12, marginTop: 6, lineHeight: 16 }}>{pctHint.text}</Text>
+          ) : null}
 
           <Text style={[styles.section, { color: c.textMuted }]}>Origen</Text>
           {/* Con más de dos orígenes los chips saltan de línea. */}

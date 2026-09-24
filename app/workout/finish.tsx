@@ -200,12 +200,13 @@ export default function FinishScreen() {
   const workout = saved?.workout ?? preview
   const routine: Routine | undefined = workout?.routineId ? routines.find((r) => r.id === workout.routineId) : undefined
 
-  // En semanas con objetivos propios del plan (natación) o de descarga, los
-  // valores del día no deben convertirse en los objetivos base de la rutina.
-  const phaseManaged = useMemo(() => {
-    if (!workout || !routine?.program) return false
+  // En semanas con objetivos propios del plan (natación), de descarga o con el
+  // plan en pausa, los valores del día no deben convertirse en los objetivos
+  // base de la rutina ni proponerse subidas.
+  const { phaseManaged, paused } = useMemo(() => {
+    if (!workout || !routine?.program) return { phaseManaged: false, paused: false }
     const t = effectiveTargets(routine, workout.startedAt, settings.weekStartsMonday)
-    return !!(t.phase?.exercises || t.phase?.deload)
+    return { phaseManaged: !!(t.phase?.exercises || t.phase?.deload || t.paused), paused: t.paused }
   }, [workout, routine, settings.weekStartsMonday])
 
   useEffect(() => { if (!workout) router.back() }, [workout, router])
@@ -392,6 +393,7 @@ export default function FinishScreen() {
           </Card>
         ) : null}
         {saved && step1 === 'applied' ? <Text style={{ color: c.success, textAlign: 'center' }}>Rutina actualizada con lo de hoy ✓</Text> : null}
+        {saved && routine && paused ? <Text style={{ color: c.textMuted, textAlign: 'center', fontSize: 13 }}>Plan en pausa: la rutina no cambia con lo de hoy.</Text> : null}
 
         {saved && routine && !phaseManaged && step1 !== 'pending' && rows.length > 0 ? (
           <Card style={{ gap: 12 }}>

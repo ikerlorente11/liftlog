@@ -4,7 +4,7 @@ import { create } from 'zustand'
 import * as db from '../db/database'
 import { BUNDLED_EXERCISES } from '../lib/exercises'
 import { uid } from '../lib/format'
-import { startedAtForWeek } from '../lib/program'
+import { pauseProgram, pauseProgramUntil, resumeProgram, startedAtForWeek } from '../lib/program'
 import { markPRs } from '../lib/stats'
 import { CONFIG_SETTING_KEY, DEFAULT_CONFIG, parseConfig, serializeConfig, type MeasurementConfig } from '../lib/measurementConfig'
 import type { Exercise, ExerciseType, Folder, Measurement, MeasurementSource, Routine, Workout } from '../types'
@@ -36,6 +36,12 @@ interface DataState {
   saveRoutine: (r: Routine) => Promise<void>
   /** Fija la semana actual del programa de la rutina (ajusta startedAt). */
   setProgramWeek: (routineId: string, week: number, mondayFirst: boolean) => Promise<void>
+  /** Pausa (o alarga la pausa de) todos los planes por semanas: esas semanas no cuentan. */
+  pausePrograms: (weeks: number, mondayFirst: boolean) => Promise<void>
+  /** Pausa todos los planes hasta un día concreto (sustituye una pausa previa). */
+  pauseProgramsUntil: (until: number, mondayFirst: boolean) => Promise<void>
+  /** Reanuda todos los planes en pausa esta misma semana. */
+  resumePrograms: (mondayFirst: boolean) => Promise<void>
   deleteRoutine: (id: string) => Promise<void>
   duplicateRoutine: (id: string) => Promise<Routine | null>
   moveRoutine: (id: string, folderId: string | null) => Promise<void>
@@ -129,7 +135,28 @@ export const useData = create<DataState>((set, get) => ({
     const r = get().routines.find((x) => x.id === routineId)
     if (!r?.program) return
     const w = Math.min(Math.max(1, week), r.program.totalWeeks)
-    await get().saveRoutine({ ...r, program: { ...r.program, startedAt: startedAtForWeek(w, Date.now(), mondayFirst) }, updatedAt: Date.now() })
+    await get().saveRoutine({ ...r, program: { ...r.program, startedAt: startedAtForWeek(w, Date.now(), mondayFirst), pausedUntil: null }, updatedAt: Date.now() })
+  },
+  pausePrograms: async (weeks, mondayFirst) => {
+    const now = Date.now()
+    for (const r of get().routines) {
+      if (!r.program?.phases.length) continue
+      await get().saveRoutine({ ...r, program: pauseProgram(r.program, weeks, now, mondayFirst), updatedAt: now })
+    }
+  },
+  pauseProgramsUntil: async (until, mondayFirst) => {
+    const now = Date.now()
+    for (const r of get().routines) {
+      if (!r.program?.phases.length) continue
+      await get().saveRoutine({ ...r, program: pauseProgramUntil(r.program, until, now, mondayFirst), updatedAt: now })
+    }
+  },
+  resumePrograms: async (mondayFirst) => {
+    const now = Date.now()
+    for (const r of get().routines) {
+      if (!r.program?.pausedUntil) continue
+      await get().saveRoutine({ ...r, program: resumeProgram(r.program, now, mondayFirst), updatedAt: now })
+    }
   },
   deleteRoutine: async (id) => {
     await db.deleteRoutine(id)

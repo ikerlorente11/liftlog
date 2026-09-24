@@ -192,6 +192,7 @@ for (const r of data.routines) {
   // primera vez que se abre la rutina. Un timestamp debe ser el lunes de la semana 1.
   if (p.startedAt == null) { /* ok */ }
   else if (typeof p.startedAt !== 'number' || new Date(p.startedAt).getDay() !== 1) err(`${where}: program.startedAt debe ser un lunes (ms desde epoch)`)
+  if (p.pausedUntil != null && typeof p.pausedUntil !== 'number') err(`${where}: program.pausedUntil debe ser un timestamp (ms desde epoch) o null`)
   if (!Array.isArray(p.phases) || !p.phases.length) { err(`${where}: program.phases vacío`); continue }
   const seen = new Map()
   for (const ph of p.phases) {

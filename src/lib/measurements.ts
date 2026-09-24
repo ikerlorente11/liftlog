@@ -12,8 +12,8 @@ import type { Measurement, MeasurementSource } from '../types'
 
 const DAY = 86_400_000
 
-/** Peso (kg) del mismo origen más cercano a la fecha, dentro de una tolerancia. */
-export function weightNear(measurements: Measurement[], source: MeasurementSource, date: number, toleranceDays = 3): number | null {
+/** Medida de peso del mismo origen más cercana a la fecha, dentro de una tolerancia. */
+export function weightMeasurementNear(measurements: Measurement[], source: MeasurementSource, date: number, toleranceDays = 3): Measurement | null {
   let best: Measurement | null = null
   let bestGap = Infinity
   for (const m of measurements) {
@@ -21,7 +21,12 @@ export function weightNear(measurements: Measurement[], source: MeasurementSourc
     const gap = Math.abs(m.date - date)
     if (gap <= toleranceDays * DAY && gap < bestGap) { best = m; bestGap = gap }
   }
-  return best ? best.value : null
+  return best
+}
+
+/** Peso (kg) del mismo origen más cercano a la fecha, dentro de una tolerancia. */
+export function weightNear(measurements: Measurement[], source: MeasurementSource, date: number, toleranceDays = 3): number | null {
+  return weightMeasurementNear(measurements, source, date, toleranceDays)?.value ?? null
 }
 
 /** Valor en kg como % del peso, con un decimal; null si no hay peso comparable. */
