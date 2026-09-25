@@ -3,6 +3,8 @@
 Formato: versión (versionCode) — fecha.
 
 ## 1.3.0 OTA — 2026-09-25 (canal production, runtime 1.3.0)
+OTA publicada el 25/09 (grupo e763edd7, commit a98fbb3).
+
 - **La pestaña Entreno pasa a ser la pantalla de inicio** (feedback del 25/09: "lo más común es
   que entre y vaya directamente a la sección de entrenamientos para iniciar uno nuevo"). El feed
   de entrenos realizados se mueve a la nueva pestaña **Historial** (icono de reloj, a la
