@@ -1,13 +1,15 @@
-// Crear/editar rutina: título, notas, ejercicios con series objetivo,
-// superseries, descanso por ejercicio. También "guardar entreno como rutina".
+// Crear/editar rutina: título, notas, días de la semana y hora, ejercicios con
+// series objetivo, superseries, descanso por ejercicio. También "guardar entreno como rutina".
+import DateTimePicker from '@react-native-community/datetimepicker'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { EntryEditor, REST_OPTIONS, restLabel } from '../../src/components/EntryEditor'
 import { ExercisePicker } from '../../src/components/ExercisePicker'
 import { useSupersetIndex } from '../../src/components/useEntryHelpers'
 import { fmtDuration, uid } from '../../src/lib/format'
+import { DAY_SHORT, fmtTimeOfDay, parseTime, weekDays } from '../../src/lib/schedule'
 import { useData } from '../../src/store/dataStore'
 import { useSettings } from '../../src/store/settingsStore'
 import { useColors } from '../../src/theme'
@@ -51,6 +53,7 @@ export default function RoutineEditor() {
   const [restFor, setRestFor] = useState<ExerciseEntry | null>(null)
   const [supersetFor, setSupersetFor] = useState<ExerciseEntry | null>(null)
   const [confirmClose, setConfirmClose] = useState(false)
+  const [timePicker, setTimePicker] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const ssIndex = useSupersetIndex(routine.exercises)
 
@@ -60,7 +63,8 @@ export default function RoutineEditor() {
   const save = async () => {
     if (!routine.name.trim()) { setError('Ponle un título a la rutina.'); return }
     if (routine.exercises.length === 0) { setError('Añade al menos un ejercicio.'); return }
-    await saveRoutine({ ...routine, name: routine.name.trim(), updatedAt: Date.now() })
+    const schedule = routine.schedule?.days.length ? routine.schedule : null
+    await saveRoutine({ ...routine, name: routine.name.trim(), schedule, updatedAt: Date.now() })
     router.back()
   }
 
@@ -92,6 +96,44 @@ export default function RoutineEditor() {
             style={[styles.notes, { color: c.textMuted }]}
           />
           {error ? <Text style={{ color: c.danger, marginBottom: 8 }}>{error}</Text> : null}
+
+          {/* Día(s) y hora: la pestaña Entreno se desplaza sola hasta la rutina de hoy */}
+          <View style={[styles.schedule, { borderColor: c.border, backgroundColor: c.card }]}>
+            <Text style={{ color: c.textMuted, fontSize: 12, fontWeight: '700' }}>¿QUÉ DÍAS TOCA?</Text>
+            <View style={{ flexDirection: 'row', gap: 6 }}>
+              {weekDays(settings.weekStartsMonday).map((d) => {
+                const on = !!routine.schedule?.days.includes(d)
+                return (
+                  <Pressable
+                    key={d}
+                    hitSlop={4}
+                    onPress={() => mutate((r) => {
+                      const days = new Set(r.schedule?.days ?? [])
+                      if (days.has(d)) days.delete(d); else days.add(d)
+                      r.schedule = { days: [...days].sort(), time: r.schedule?.time ?? null }
+                    })}
+                    style={[styles.day, { backgroundColor: on ? c.primary : c.chip }]}
+                  >
+                    <Text style={{ color: on ? '#fff' : c.text, fontWeight: '700' }}>{DAY_SHORT[d]}</Text>
+                  </Pressable>
+                )
+              })}
+            </View>
+            {routine.schedule?.days.length ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Pressable onPress={() => setTimePicker(true)} hitSlop={6} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Icon name="time-outline" size={18} color={c.primary} />
+                  <Text style={{ color: c.primary, fontWeight: '600' }}>{parseTime(routine.schedule.time) != null ? `A las ${routine.schedule.time}` : 'Añadir hora (opcional)'}</Text>
+                </Pressable>
+                {parseTime(routine.schedule.time) != null ? (
+                  <Pressable onPress={() => mutate((r) => { if (r.schedule) r.schedule.time = null })} hitSlop={6}>
+                    <Text style={{ color: c.textMuted }}>Quitar</Text>
+                  </Pressable>
+                ) : null}
+              </View>
+            ) : null}
+            <Text style={{ color: c.textFaint, fontSize: 12 }}>Al abrir la app, la lista se coloca en la rutina de hoy; si hay varias, en la de hora más cercana. Si no marcas nada, se deduce del nombre de la rutina ("Viernes · …") y de la hora entre paréntesis de la carpeta ("Gimnasio (6:00)").</Text>
+          </View>
 
           {routine.exercises.map((e) => (
             <EntryEditor
@@ -169,6 +211,20 @@ export default function RoutineEditor() {
           entry(r, supersetFor.id).supersetId = ssId
         })}
       />
+      {timePicker ? (
+        <DateTimePicker
+          value={(() => { const m = parseTime(routine.schedule?.time) ?? 18 * 60; const d = new Date(); d.setHours(Math.floor(m / 60), m % 60, 0, 0); return d })()}
+          mode="time"
+          is24Hour
+          display="default"
+          onChange={(event, selected) => {
+            setTimePicker(false)
+            if (event.type !== 'set' || !selected) return
+            const t = fmtTimeOfDay(selected.getHours() * 60 + selected.getMinutes())
+            mutate((r) => { r.schedule = { days: r.schedule?.days ?? [], time: t } })
+          }}
+        />
+      ) : null}
       <ConfirmDialog visible={confirmClose} title="¿Descartar cambios?" message="Los cambios de la rutina no se guardarán." confirmLabel="Descartar" destructive onCancel={() => setConfirmClose(false)} onConfirm={() => { setConfirmClose(false); router.back() }} />
     </View>
   )
@@ -177,4 +233,6 @@ export default function RoutineEditor() {
 const styles = StyleSheet.create({
   title: { fontSize: 20, fontWeight: '800', paddingVertical: 10, paddingHorizontal: 4, borderBottomWidth: StyleSheet.hairlineWidth, marginBottom: 6 },
   notes: { fontSize: 14, paddingHorizontal: 4, paddingVertical: 6, marginBottom: 10 },
+  schedule: { gap: 10, padding: 12, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, marginBottom: 12 },
+  day: { flex: 1, height: 38, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
 })

@@ -1,103 +1,210 @@
-// Inicio: feed de entrenos realizados (tarjetas) + resumen semanal.
+// Pestaña Entreno (pantalla de inicio): inicio rápido, rutinas por carpetas,
+// menús de rutina/carpeta. Al abrirse se desplaza sola hasta la rutina de hoy.
 import { useRouter } from 'expo-router'
-import { useMemo, useState } from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
-import { WorkoutCard } from '../../src/components/WorkoutCard'
-import { fmtDuration, fmtWeight, greeting, startOfWeek } from '../../src/lib/format'
-import { workoutVolume } from '../../src/lib/stats'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native'
+import { RoutineCard } from '../../src/components/RoutineCard'
+import { effectiveTargets } from '../../src/lib/program'
+import { todayRoutines } from '../../src/lib/schedule'
 import { useData } from '../../src/store/dataStore'
 import { useSettings } from '../../src/store/settingsStore'
 import { useWorkout } from '../../src/store/workoutStore'
 import { useColors } from '../../src/theme'
-import { Button, Card, EmptyState, Header, HeaderButton, Screen } from '../../src/ui/primitives'
-import { ActionSheet, ConfirmDialog } from '../../src/ui/sheets'
-import type { Workout } from '../../src/types'
+import type { Folder, Routine } from '../../src/types'
+import { Button, Header, HeaderButton, Icon, Row, Screen, SectionTitle } from '../../src/ui/primitives'
+import { ActionSheet, ConfirmDialog, OptionSheet, PromptDialog } from '../../src/ui/sheets'
 
-export default function HomeScreen() {
+export default function WorkoutTab() {
   const c = useColors()
   const router = useRouter()
-  const workouts = useData((s) => s.workouts)
-  const typeOf = useData((s) => s.typeOf)
-  const deleteWorkout = useData((s) => s.deleteWorkout)
-  const settings = useSettings((s) => s.settings)
+  const routines = useData((s) => s.routines)
+  const folders = useData((s) => s.folders)
+  const getExercise = useData((s) => s.getExercise)
+  const { deleteRoutine, duplicateRoutine, moveRoutine, createFolder, renameFolder, deleteFolder, setProgramWeek } = useData()
+  const mondayFirst = useSettings((s) => s.settings.weekStartsMonday)
   // Solo si hay entreno en curso: suscribirse al entreno entero repintaba esta
   // pantalla (montada debajo) con cada serie marcada en el entreno activo.
   const active = useWorkout((s) => !!s.active)
   const startEmpty = useWorkout((s) => s.startEmpty)
-  const [menuFor, setMenuFor] = useState<Workout | null>(null)
-  const [confirmDelete, setConfirmDelete] = useState<Workout | null>(null)
+  const startFromRoutine = useWorkout((s) => s.startFromRoutine)
 
-  const week = useMemo(() => {
-    const from = startOfWeek(Date.now(), settings.weekStartsMonday)
-    const list = workouts.filter((w) => w.startedAt >= from)
-    return {
-      count: list.length,
-      volume: list.reduce((a, w) => a + workoutVolume(w, typeOf), 0),
-      duration: list.reduce((a, w) => a + w.durationS, 0),
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
+  const [routineMenu, setRoutineMenu] = useState<Routine | null>(null)
+  const [folderMenu, setFolderMenu] = useState<Folder | null>(null)
+  const [moveFor, setMoveFor] = useState<Routine | null>(null)
+  const [confirm, setConfirm] = useState<{ title: string; message: string; label: string; onOk: () => void } | null>(null)
+  const [prompt, setPrompt] = useState<{ title: string; initial: string; onOk: (v: string) => void } | null>(null)
+
+  const grouped = useMemo(() => {
+    const noFolder = routines.filter((r) => !r.folderId).sort((a, b) => a.position - b.position)
+    const byFolder = folders.map((f) => ({ folder: f, routines: routines.filter((r) => r.folderId === f.id).sort((a, b) => a.position - b.position) }))
+    return { noFolder, byFolder }
+  }, [routines, folders])
+
+  // Rutina de hoy (día de la semana + hora más cercana): al entrar en la app se
+  // hace scroll hasta su tarjeta una sola vez, en cuanto está maquetada. Se mide
+  // contra el contenido del ScrollView porque la tarjeta va dentro de su carpeta.
+  const todayList = useMemo(() => todayRoutines(routines, folders), [routines, folders])
+  const today = todayList[0] ?? null
+  const todayIds = useMemo(() => new Set(todayList.map((r) => r.id)), [todayList])
+  const scrollRef = useRef<ScrollView>(null)
+  const todayRef = useRef<View>(null)
+  const scrolledTo = useRef<string | null>(null)
+  const scrollToToday = () => {
+    if (!today || scrolledTo.current === today.id) return
+    // Fabric: measureLayout necesita la ref del componente nativo, no el node handle.
+    // getInnerViewRef existe en runtime (RN ≥ 0.71) pero falta en los tipos.
+    const inner = (scrollRef.current as unknown as { getInnerViewRef?: () => View | null } | null)?.getInnerViewRef?.()
+    if (!inner || !todayRef.current) return
+    todayRef.current.measureLayout(inner, (_x, y) => {
+      scrolledTo.current = today.id
+      scrollRef.current?.scrollTo({ y: Math.max(0, y - 12), animated: true })
+    }, () => { /* aún sin maquetar: se reintenta en el siguiente onLayout */ })
+  }
+  useEffect(() => { scrollToToday() }) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const startRoutine = (r: Routine) => {
+    const go = () => {
+      const targets = effectiveTargets(r, Date.now(), mondayFirst)
+      // Al primer entreno de un plan sin empezar, arranca en la semana mostrada
+      if (r.program && !targets.started) void setProgramWeek(r.id, targets.week, mondayFirst)
+      startFromRoutine(r, targets.entries)
+      router.push('/workout/active')
     }
-  }, [workouts, settings.weekStartsMonday, typeOf])
+    if (active) {
+      setConfirm({ title: 'Ya hay un entreno en curso', message: 'Si empiezas esta rutina se descartará el entreno actual. ¿Continuar?', label: 'Descartar y empezar', onOk: go })
+    } else go()
+  }
+  const startEmptyWorkout = () => {
+    if (active) { router.push('/workout/active'); return }
+    startEmpty(); router.push('/workout/active')
+  }
+
+  const shareRoutine = async (r: Routine) => {
+    const lines = [r.name, '', ...r.exercises.map((e) => `• ${getExercise(e.exerciseId)?.nameEs ?? e.exerciseId} — ${e.sets.length} series`)]
+    await Share.share({ message: lines.join('\n') })
+  }
+
+  const renderRoutines = (list: Routine[]) => list.map((r) => {
+    const card = <RoutineCard routine={r} onStart={() => startRoutine(r)} onMenu={() => setRoutineMenu(r)} today={todayIds.has(r.id)} />
+    return r.id === today?.id ? <View key={r.id} ref={todayRef} onLayout={scrollToToday}>{card}</View> : <View key={r.id}>{card}</View>
+  })
 
   return (
     <Screen>
-      <Header title="Inicio" right={<HeaderButton icon="settings-outline" onPress={() => router.push('/settings')} color={c.text} />} />
-      <FlatList
-        data={workouts}
-        keyExtractor={(w) => w.id}
-        contentContainerStyle={{ padding: 12, gap: 12, paddingBottom: 140 }}
-        ListHeaderComponent={
-          <Card style={{ gap: 6 }}>
-            <Text style={{ color: c.textMuted, fontSize: 13 }}>{greeting()}, {settings.userName || 'campeón'} 👋</Text>
-            <Text style={{ color: c.text, fontSize: 18, fontWeight: '800' }}>Esta semana</Text>
-            <View style={styles.weekRow}>
-              <WeekStat label="Entrenos" value={String(week.count)} />
-              <WeekStat label="Volumen" value={fmtWeight(week.volume, settings.weightUnit)} />
-              <WeekStat label="Tiempo" value={fmtDuration(week.duration)} />
-            </View>
-            {!active ? <Button label="Empezar un entrenamiento" icon="add" onPress={() => { startEmpty(); router.push('/workout/active') }} style={{ marginTop: 6 }} /> : null}
-          </Card>
-        }
-        renderItem={({ item }) => <WorkoutCard workout={item} onMenu={setMenuFor} />}
-        ListEmptyComponent={
-          <EmptyState
-            icon="barbell-outline"
-            title="Aún no has registrado ningún entreno"
-            text="Empieza uno vacío o lanza una rutina desde la pestaña Entreno. Tus entrenos aparecerán aquí."
-            action={<Button label="Ir a rutinas" variant="secondary" onPress={() => router.push('/workout')} />}
-          />
+      <Header
+        title="Entrenamiento"
+        right={
+          <Row gap={4}>
+            <HeaderButton icon="folder-outline" color={c.text} onPress={() => setPrompt({ title: 'Nueva carpeta', initial: '', onOk: (v) => { if (v.trim()) void createFolder(v.trim()) } })} />
+            <HeaderButton icon="settings-outline" color={c.text} onPress={() => router.push('/settings')} />
+          </Row>
         }
       />
+      <ScrollView ref={scrollRef} contentContainerStyle={{ padding: 12, gap: 12, paddingBottom: 140 }}>
+        <SectionTitle>Inicio rápido</SectionTitle>
+        <Button label={active ? 'Reanudar entrenamiento' : 'Empezar un entrenamiento vacío'} icon="add" onPress={startEmptyWorkout} />
+
+        <SectionTitle style={{ marginTop: 8 }} right={
+          <Pressable onPress={() => router.push('/exercises')} hitSlop={8}><Text style={{ color: c.primary, fontWeight: '600' }}>Ejercicios</Text></Pressable>
+        }>Rutinas</SectionTitle>
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          <Button label="Nueva rutina" icon="document-text-outline" variant="secondary" onPress={() => router.push('/routine/edit')} style={{ flex: 1 }} />
+          <Button label="Explorar" icon="search-outline" variant="secondary" onPress={() => router.push('/exercises')} style={{ flex: 1 }} />
+        </View>
+
+        {grouped.noFolder.length > 0 ? (
+          <View style={{ gap: 10 }}>
+            <FolderHeader name={`Mis rutinas (${grouped.noFolder.length})`} collapsed={!!collapsed['_none']} onToggle={() => setCollapsed((s) => ({ ...s, _none: !s._none }))} />
+            {!collapsed['_none'] ? renderRoutines(grouped.noFolder) : null}
+          </View>
+        ) : null}
+
+        {grouped.byFolder.map(({ folder, routines: list }) => (
+          <View key={folder.id} style={{ gap: 10 }}>
+            <FolderHeader
+              name={`${folder.name} (${list.length})`}
+              collapsed={!!collapsed[folder.id]}
+              onToggle={() => setCollapsed((s) => ({ ...s, [folder.id]: !s[folder.id] }))}
+              onMenu={() => setFolderMenu(folder)}
+            />
+            {!collapsed[folder.id] ? (list.length ? renderRoutines(list) : <Text style={{ color: c.textFaint, paddingHorizontal: 8 }}>Carpeta vacía</Text>) : null}
+          </View>
+        ))}
+
+        {routines.length === 0 ? (
+          <View style={{ alignItems: 'center', gap: 10, padding: 24 }}>
+            <Icon name="albums-outline" size={40} color={c.textFaint} />
+            <Text style={{ color: c.textMuted, textAlign: 'center' }}>Todavía no tienes rutinas. Crea una nueva o importa una copia de seguridad desde Ajustes.</Text>
+            <Button label="Crear mi primera rutina" variant="secondary" onPress={() => router.push('/routine/edit')} />
+          </View>
+        ) : null}
+      </ScrollView>
+
       <ActionSheet
-        visible={!!menuFor}
-        onClose={() => setMenuFor(null)}
-        title={menuFor?.title}
+        visible={!!routineMenu}
+        onClose={() => setRoutineMenu(null)}
+        title={routineMenu?.name}
         actions={[
-          { label: 'Ver entreno', icon: 'eye-outline', onPress: () => menuFor && router.push(`/workout/${menuFor.id}`) },
-          { label: 'Editar entreno', icon: 'create-outline', onPress: () => menuFor && router.push({ pathname: '/workout/[id]', params: { id: menuFor.id, edit: '1' } }) },
-          { label: 'Guardar como rutina', icon: 'bookmark-outline', onPress: () => menuFor && router.push({ pathname: '/routine/edit', params: { fromWorkout: menuFor.id } }) },
-          { label: 'Eliminar entreno', icon: 'trash-outline', destructive: true, onPress: () => setConfirmDelete(menuFor) },
+          { label: 'Empezar rutina', icon: 'play-outline', onPress: () => routineMenu && startRoutine(routineMenu) },
+          { label: 'Editar rutina', icon: 'create-outline', onPress: () => routineMenu && router.push({ pathname: '/routine/edit', params: { id: routineMenu.id } }) },
+          { label: 'Duplicar rutina', icon: 'copy-outline', onPress: () => routineMenu && void duplicateRoutine(routineMenu.id) },
+          { label: 'Mover a carpeta', icon: 'folder-open-outline', onPress: () => routineMenu && setMoveFor(routineMenu) },
+          { label: 'Compartir', icon: 'share-social-outline', onPress: () => routineMenu && void shareRoutine(routineMenu) },
+          { label: 'Eliminar rutina', icon: 'trash-outline', destructive: true, onPress: () => routineMenu && setConfirm({ title: '¿Eliminar rutina?', message: `Se eliminará "${routineMenu.name}".`, label: 'Eliminar', onOk: () => void deleteRoutine(routineMenu.id) }) },
         ]}
       />
+      <ActionSheet
+        visible={!!folderMenu}
+        onClose={() => setFolderMenu(null)}
+        title={folderMenu?.name}
+        actions={[
+          { label: 'Añadir rutina a la carpeta', icon: 'add-outline', onPress: () => folderMenu && router.push({ pathname: '/routine/edit', params: { folderId: folderMenu.id } }) },
+          { label: 'Renombrar carpeta', icon: 'pencil-outline', onPress: () => folderMenu && setPrompt({ title: 'Renombrar carpeta', initial: folderMenu.name, onOk: (v) => { if (v.trim()) void renameFolder(folderMenu.id, v.trim()) } }) },
+          { label: 'Eliminar carpeta (mantener rutinas)', icon: 'folder-outline', onPress: () => folderMenu && void deleteFolder(folderMenu.id, false) },
+          { label: 'Eliminar carpeta y rutinas', icon: 'trash-outline', destructive: true, onPress: () => folderMenu && setConfirm({ title: '¿Eliminar carpeta y sus rutinas?', message: 'Se eliminarán todas las rutinas de la carpeta.', label: 'Eliminar todo', onOk: () => void deleteFolder(folderMenu.id, true) }) },
+        ]}
+      />
+      <OptionSheet
+        visible={!!moveFor}
+        onClose={() => setMoveFor(null)}
+        title="Mover a carpeta"
+        value={moveFor?.folderId ?? ''}
+        options={[{ value: '', label: 'Sin carpeta' }, ...folders.map((f) => ({ value: f.id, label: f.name }))]}
+        onSelect={(v) => { if (moveFor) void moveRoutine(moveFor.id, v || null) }}
+      />
       <ConfirmDialog
-        visible={!!confirmDelete}
-        title="¿Eliminar entreno?"
-        message="Esta acción no se puede deshacer."
-        confirmLabel="Eliminar"
+        visible={!!confirm}
+        title={confirm?.title ?? ''}
+        message={confirm?.message}
+        confirmLabel={confirm?.label}
         destructive
-        onCancel={() => setConfirmDelete(null)}
-        onConfirm={() => { if (confirmDelete) void deleteWorkout(confirmDelete.id); setConfirmDelete(null) }}
+        onCancel={() => setConfirm(null)}
+        onConfirm={() => { confirm?.onOk(); setConfirm(null) }}
+      />
+      <PromptDialog
+        visible={!!prompt}
+        title={prompt?.title ?? ''}
+        initialValue={prompt?.initial}
+        placeholder="Nombre de la carpeta"
+        onCancel={() => setPrompt(null)}
+        onConfirm={(v) => { prompt?.onOk(v); setPrompt(null) }}
       />
     </Screen>
   )
 }
 
-function WeekStat({ label, value }: { label: string; value: string }) {
+function FolderHeader({ name, collapsed, onToggle, onMenu }: { name: string; collapsed: boolean; onToggle: () => void; onMenu?: () => void }) {
   const c = useColors()
   return (
-    <View style={{ flex: 1 }}>
-      <Text style={{ color: c.textMuted, fontSize: 12 }}>{label}</Text>
-      <Text style={{ color: c.text, fontSize: 16, fontWeight: '700' }}>{value}</Text>
+    <View style={styles.folderRow}>
+      <Pressable onPress={onToggle} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <Icon name={collapsed ? 'chevron-forward' : 'chevron-down'} size={18} color={c.textMuted} />
+        <Text numberOfLines={1} style={{ color: c.text, fontWeight: '700', fontSize: 15, flex: 1 }}>{name}</Text>
+      </Pressable>
+      {onMenu ? <Pressable onPress={onMenu} hitSlop={10}><Icon name="ellipsis-horizontal" size={20} color={c.textMuted} /></Pressable> : null}
     </View>
   )
 }
 
-const styles = StyleSheet.create({ weekRow: { flexDirection: 'row', marginTop: 4 } })
+const styles = StyleSheet.create({ folderRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 4, marginTop: 6 } })

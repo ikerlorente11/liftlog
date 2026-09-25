@@ -64,6 +64,8 @@ export function getDb(): Promise<SQLite.SQLiteDatabase> {
       try { await db.execAsync('ALTER TABLE routine_exercises ADD COLUMN rep_max INTEGER') } catch { /* ya existe */ }
       // Migración v1.5: la grasa corporal en % (body_fat) pasa a kg (fat_mass)
       await convertBodyFatRows(db)
+      // Migración v1.6: día de la semana y hora de cada rutina
+      try { await db.execAsync('ALTER TABLE routines ADD COLUMN schedule TEXT') } catch { /* ya existe */ }
       return db
     })()
   }
@@ -181,7 +183,19 @@ async function loadEntries(table: 'routine' | 'workout', parentIds: string[]): P
   return map
 }
 
-interface RoutineRow { id: string; name: string; notes: string; folder_id: string | null; position: number; created_at: number; updated_at: number; program: string | null }
+interface RoutineRow { id: string; name: string; notes: string; folder_id: string | null; position: number; created_at: number; updated_at: number; program: string | null; schedule: string | null }
+
+function parseSchedule(json: string | null): Routine['schedule'] {
+  if (!json) return null
+  try {
+    const s = JSON.parse(json) as Routine['schedule']
+    return s && Array.isArray(s.days) ? s : null
+  } catch { return null }
+}
+
+function rowToRoutine(r: RoutineRow, exercises: ExerciseEntry[]): Routine {
+  return { id: r.id, name: r.name, notes: r.notes, folderId: r.folder_id, position: r.position, createdAt: r.created_at, updatedAt: r.updated_at, exercises, program: parseProgram(r.program), schedule: parseSchedule(r.schedule) }
+}
 
 function parseProgram(json: string | null): Routine['program'] {
   if (!json) return null
@@ -192,7 +206,7 @@ export async function listRoutines(): Promise<Routine[]> {
   const db = await getDb()
   const rows = await db.getAllAsync<RoutineRow>('SELECT * FROM routines ORDER BY position, created_at')
   const entries = await loadEntries('routine', rows.map((r) => r.id))
-  return rows.map((r) => ({ id: r.id, name: r.name, notes: r.notes, folderId: r.folder_id, position: r.position, createdAt: r.created_at, updatedAt: r.updated_at, exercises: entries.get(r.id) ?? [], program: parseProgram(r.program) }))
+  return rows.map((r) => rowToRoutine(r, entries.get(r.id) ?? []))
 }
 
 export async function getRoutine(id: string): Promise<Routine | null> {
@@ -200,15 +214,15 @@ export async function getRoutine(id: string): Promise<Routine | null> {
   const r = await db.getFirstAsync<RoutineRow>('SELECT * FROM routines WHERE id = ?', id)
   if (!r) return null
   const entries = await loadEntries('routine', [id])
-  return { id: r.id, name: r.name, notes: r.notes, folderId: r.folder_id, position: r.position, createdAt: r.created_at, updatedAt: r.updated_at, exercises: entries.get(id) ?? [], program: parseProgram(r.program) }
+  return rowToRoutine(r, entries.get(id) ?? [])
 }
 
 export async function saveRoutine(r: Routine): Promise<void> {
   const db = await getDb()
   await db.withTransactionAsync(async () => {
     await db.runAsync(
-      'INSERT OR REPLACE INTO routines (id, name, notes, folder_id, position, created_at, updated_at, program) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      r.id, r.name, r.notes ?? '', r.folderId, r.position, r.createdAt, r.updatedAt, r.program ? JSON.stringify(r.program) : null,
+      'INSERT OR REPLACE INTO routines (id, name, notes, folder_id, position, created_at, updated_at, program, schedule) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      r.id, r.name, r.notes ?? '', r.folderId, r.position, r.createdAt, r.updatedAt, r.program ? JSON.stringify(r.program) : null, r.schedule?.days.length ? JSON.stringify(r.schedule) : null,
     )
     await db.runAsync('DELETE FROM routine_exercises WHERE routine_id = ?', r.id)
     for (let i = 0; i < r.exercises.length; i++) {

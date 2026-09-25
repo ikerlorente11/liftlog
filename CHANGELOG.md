@@ -2,6 +2,25 @@
 
 Formato: versión (versionCode) — fecha.
 
+## 1.3.0 OTA — 2026-09-25 (canal production, runtime 1.3.0)
+- **La pestaña Entreno pasa a ser la pantalla de inicio** (feedback del 25/09: "lo más común es
+  que entre y vaya directamente a la sección de entrenamientos para iniciar uno nuevo"). El feed
+  de entrenos realizados se mueve a la nueva pestaña **Historial** (icono de reloj, a la
+  izquierda; Entreno queda en el centro y Perfil a la derecha), con el
+  resumen semanal y acceso directo al calendario; el botón de Ajustes sigue en la cabecera de
+  Entreno y en Perfil.
+- **Rutinas con día y hora**: la app deduce el día del nombre de la rutina ("Viernes · Pierna
+  B", "Miércoles noche · Calistenia") y la hora del paréntesis del nombre de la carpeta
+  ("Gimnasio (6:00)", "Calistenia (20:00)") o de la propia rutina, sin tocar nada. Al editar una
+  rutina se puede fijar a mano (chips L M X J V S D y hora opcional), y eso manda sobre lo
+  deducido. La tarjeta muestra "Viernes · 06:00" y todas las rutinas de hoy llevan borde de color
+  y etiqueta HOY. Al abrir la app la lista se desplaza sola hasta la rutina de hoy; si hay varias
+  ese día, hasta la de hora más cercana a la actual (a las 6 de la mañana del viernes, Pierna B;
+  por la tarde, la calistenia de las 20). Nuevo campo opcional `schedule` en `Routine`
+  (`{ days: [0-6], time: "HH:MM" | null }`, 0 = domingo); nueva columna `routines.schedule`
+  (migración automática), el validador lo comprueba y el fichero de generar planes con IA lo
+  documenta.
+
 ## 1.3.0 OTA — 2026-09-24 (canal production, runtime 1.3.0)
 OTA publicada el 24/09 (grupo 69cfd2a6, commit 184d0af).
 

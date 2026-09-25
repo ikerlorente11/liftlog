@@ -1,4 +1,4 @@
-// Pestañas Inicio / Entreno / Perfil, con la barra de "entreno en curso"
+// Pestañas Historial / Entreno (home, en el centro) / Perfil, con la barra de "entreno en curso"
 // encima de la tab bar cuando hay un entrenamiento minimizado.
 import { Tabs, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -48,6 +48,7 @@ export default function TabsLayout() {
   return (
     <View style={{ flex: 1 }}>
       <Tabs
+        initialRouteName="index"
         screenOptions={{
           headerShown: false,
           tabBarActiveTintColor: c.primary,
@@ -57,8 +58,9 @@ export default function TabsLayout() {
           sceneStyle: { backgroundColor: c.bg },
         }}
       >
-        <Tabs.Screen name="index" options={{ title: 'Inicio', tabBarIcon: ({ color, size }) => <Icon name="home" size={size} color={color} /> }} />
-        <Tabs.Screen name="workout" options={{ title: 'Entreno', tabBarIcon: ({ color, size }) => <Icon name="add-circle" size={size + 4} color={color} /> }} />
+        {/* El orden de los Tabs.Screen es el orden de la barra; initialRouteName mantiene Entreno como inicio */}
+        <Tabs.Screen name="history" options={{ title: 'Historial', tabBarIcon: ({ color, size }) => <Icon name="time" size={size} color={color} /> }} />
+        <Tabs.Screen name="index" options={{ title: 'Entreno', tabBarIcon: ({ color, size }) => <Icon name="barbell" size={size + 2} color={color} /> }} />
         <Tabs.Screen name="profile" options={{ title: 'Perfil', tabBarIcon: ({ color, size }) => <Icon name="person" size={size} color={color} /> }} />
       </Tabs>
       <View style={[styles.bannerWrap, { bottom: 56 + insets.bottom }]} pointerEvents="box-none">

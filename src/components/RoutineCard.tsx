@@ -1,25 +1,30 @@
-// Tarjeta de rutina en la pestaña Entreno: título, resumen de ejercicios y
-// botón "Empezar rutina" (con menú ⋯).
+// Tarjeta de rutina en la pestaña Entreno: título, día/hora programados,
+// resumen de ejercicios y botón "Empezar rutina" (con menú ⋯). La rutina de
+// hoy lleva borde de color y etiqueta "Hoy".
 import { useRouter } from 'expo-router'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { programChip } from '../lib/program'
+import { effectiveSchedule, scheduleLabel } from '../lib/schedule'
 import { useData } from '../store/dataStore'
 import { useSettings } from '../store/settingsStore'
 import { useColors } from '../theme'
 import type { Routine } from '../types'
 import { Button, Card, Icon } from '../ui/primitives'
 
-export function RoutineCard({ routine, onStart, onMenu }: { routine: Routine; onStart: () => void; onMenu: () => void }) {
+export function RoutineCard({ routine, onStart, onMenu, today }: { routine: Routine; onStart: () => void; onMenu: () => void; today?: boolean }) {
   const c = useColors()
   const router = useRouter()
   const getExercise = useData((s) => s.getExercise)
+  const folders = useData((s) => s.folders)
   const mondayFirst = useSettings((s) => s.settings.weekStartsMonday)
   const names = routine.exercises.map((e) => getExercise(e.exerciseId)?.nameEs ?? e.exerciseId).join(', ')
   const chip = programChip(routine, Date.now(), mondayFirst)
+  const when = scheduleLabel(effectiveSchedule(routine, folders), mondayFirst)
   return (
-    <Card style={{ gap: 10 }} onPress={() => router.push(`/routine/${routine.id}`)}>
+    <Card style={[{ gap: 10 }, today && { borderColor: c.primary, borderWidth: 1.5 }]} onPress={() => router.push(`/routine/${routine.id}`)}>
       <View style={styles.head}>
         <Text numberOfLines={2} style={[styles.title, { color: c.text }]}>{routine.name}</Text>
+        {today ? <View style={[styles.today, { backgroundColor: c.primary }]}><Text style={{ color: '#fff', fontSize: 11, fontWeight: '800' }}>HOY</Text></View> : null}
         <Pressable onPress={onMenu} hitSlop={10} style={{ padding: 2 }}>
           <Icon name="ellipsis-horizontal" size={20} color={c.textMuted} />
         </Pressable>
@@ -28,6 +33,12 @@ export function RoutineCard({ routine, onStart, onMenu }: { routine: Routine; on
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
           <Icon name="calendar-outline" size={14} color={c.primary} />
           <Text style={{ color: c.primary, fontSize: 13, fontWeight: '600' }}>{chip}</Text>
+        </View>
+      ) : null}
+      {when ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <Icon name="time-outline" size={14} color={today ? c.primary : c.textMuted} />
+          <Text style={{ color: today ? c.primary : c.textMuted, fontSize: 13, fontWeight: '600' }}>{when}</Text>
         </View>
       ) : null}
       <Text numberOfLines={2} style={{ color: c.textMuted, fontSize: 13, lineHeight: 18 }}>{names || 'Sin ejercicios'}</Text>
@@ -39,4 +50,5 @@ export function RoutineCard({ routine, onStart, onMenu }: { routine: Routine; on
 const styles = StyleSheet.create({
   head: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
   title: { flex: 1, fontSize: 16, fontWeight: '700' },
+  today: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, marginTop: 1 },
 })

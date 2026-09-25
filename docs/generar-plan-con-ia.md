@@ -170,12 +170,17 @@ Agrupa por contexto (Gimnasio, Casa, Piscina, Vacaciones…), no por semana.
   "createdAt": 1757500000000,
   "updatedAt": 1757500000000,        // al REGENERAR un plan, pon la fecha actual (ver arriba)
   "exercises": [ /* ExerciseEntry: los objetivos base */ ],
-  "program": null                    // o RoutineProgram (recomendado si hay progresión por semanas)
+  "program": null,                   // o RoutineProgram (recomendado si hay progresión por semanas)
+  "schedule": { "days": [1, 4], "time": "18:00" }  // opcional: días (0 = domingo … 6 = sábado) y hora "HH:MM" o null
 }
 ```
 
 Una rutina = una sesión. Si el plan tiene "Día 1 / Día 2 / Día 3", son tres rutinas. Pon el día
-de la semana en el nombre si el plan lo fija.
+de la semana en el nombre si el plan lo fija ("Viernes · Pierna B") y la hora entre paréntesis
+en el nombre de la carpeta ("Gimnasio (6:00)"): la app deduce de ahí el horario y la pestaña
+Entreno (pantalla de inicio) se coloca sola en la rutina de hoy y, si hay varias ese día, en la
+de hora más cercana. `schedule` es opcional y, si se rellena, manda sobre lo deducido del
+nombre (útil si el nombre no lleva día o hay varios días).
 
 #### ExerciseEntry (ejercicio dentro de una rutina)
 

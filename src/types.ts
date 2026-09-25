@@ -96,6 +96,15 @@ export interface RoutineProgram {
   phases: ProgramPhase[]
 }
 
+/** Días y hora en los que toca una rutina: la pestaña Entreno se desplaza
+ * sola hasta la rutina de hoy (la de hora más cercana si hay varias). */
+export interface RoutineSchedule {
+  /** Días de la semana como Date.getDay(): 0 = domingo … 6 = sábado */
+  days: number[]
+  /** Hora prevista "HH:MM" (24 h) o null si solo importa el día */
+  time?: string | null
+}
+
 export interface Routine {
   id: string
   name: string
@@ -107,6 +116,8 @@ export interface Routine {
   exercises: ExerciseEntry[]
   /** Programa por semanas opcional: la semana actual decide los objetivos */
   program?: RoutineProgram | null
+  /** Día(s) de la semana y hora en que se hace esta rutina (opcional) */
+  schedule?: RoutineSchedule | null
 }
 
 export interface Workout {

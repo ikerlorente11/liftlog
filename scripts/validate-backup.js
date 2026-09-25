@@ -184,6 +184,13 @@ for (const r of data.routines) {
   const ids = new Set()
   checkEntries(r.exercises, ids, where)
 
+  // día(s) de la semana y hora
+  const sch = r.schedule
+  if (sch != null) {
+    if (!Array.isArray(sch.days) || sch.days.some((d) => !Number.isInteger(d) || d < 0 || d > 6)) err(`${where}: schedule.days debe ser una lista de días 0 (domingo) … 6 (sábado)`)
+    if (sch.time != null && !/^([01]?\d|2[0-3]):[0-5]\d$/.test(String(sch.time))) err(`${where}: schedule.time debe ser "HH:MM" (24 h) o null`)
+  }
+
   // programa por semanas
   const p = r.program
   if (p == null) continue

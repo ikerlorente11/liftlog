@@ -8,6 +8,7 @@ import { restLabel } from '../../src/components/EntryEditor'
 import { useSupersetIndex } from '../../src/components/useEntryHelpers'
 import { fmtDayMonth } from '../../src/lib/format'
 import { effectiveTargets, phaseForWeek } from '../../src/lib/program'
+import { effectiveSchedule, scheduleLabel } from '../../src/lib/schedule'
 import { fmtSet } from '../../src/lib/stats'
 import { useData } from '../../src/store/dataStore'
 import { useSettings } from '../../src/store/settingsStore'
@@ -24,6 +25,7 @@ export default function RoutineDetail() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const settings = useSettings((s) => s.settings)
   const routine = useData((s) => s.routines.find((r) => r.id === id))
+  const folders = useData((s) => s.folders)
   const { getExercise, typeOf, setProgramWeek } = useData()
   // Solo si hay entreno en curso: suscribirse al entreno entero repintaba esta
   // pantalla (montada debajo) con cada serie marcada en el entreno activo.
@@ -87,6 +89,12 @@ export default function RoutineDetail() {
               <Text style={{ color: c.warning, fontSize: 13 }}>Semana de descarga: mitad de series con los mismos pesos.</Text>
             ) : null}
           </Card>
+        ) : null}
+        {effectiveSchedule(routine, folders) ? (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 4 }}>
+            <Icon name="time-outline" size={16} color={c.textMuted} />
+            <Text style={{ color: c.textMuted, fontSize: 13, fontWeight: '600' }}>{scheduleLabel(effectiveSchedule(routine, folders), settings.weekStartsMonday)}</Text>
+          </View>
         ) : null}
         {routine.notes ? <Card><Text style={{ color: c.textMuted, lineHeight: 20 }}>{routine.notes}</Text></Card> : null}
         {targets.entries.map((e) => {
