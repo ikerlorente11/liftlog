@@ -4,6 +4,7 @@
 // y de la hora entre paréntesis del nombre de la rutina o de su carpeta
 // ("Gimnasio (6:00)").
 import type { Folder, Routine, RoutineSchedule } from '../types'
+import { skipsThisWeek } from './program'
 
 /** Etiquetas cortas por Date.getDay() (0 = domingo). */
 export const DAY_SHORT = ['D', 'L', 'M', 'X', 'J', 'V', 'S']
@@ -77,8 +78,9 @@ export function effectiveSchedule(r: Routine, folders: Folder[] = []): RoutineSc
 }
 
 /** Rutinas que tocan hoy, ordenadas por cercanía de su hora a la actual
- * (las que no tienen hora van detrás, por posición). */
-export function todayRoutines(routines: Routine[], folders: Folder[] = [], now = Date.now()): Routine[] {
+ * (las que no tienen hora van detrás, por posición). Se excluyen las que su
+ * programa marca como "no toca esta semana" (fase con skip). */
+export function todayRoutines(routines: Routine[], folders: Folder[] = [], now = Date.now(), mondayFirst = true): Routine[] {
   const d = new Date(now)
   const day = d.getDay()
   const nowMin = d.getHours() * 60 + d.getMinutes()
@@ -87,7 +89,7 @@ export function todayRoutines(routines: Routine[], folders: Folder[] = [], now =
     return t == null ? Number.POSITIVE_INFINITY : Math.abs(t - nowMin)
   }
   return routines
-    .filter((r) => effectiveSchedule(r, folders)?.days.includes(day))
+    .filter((r) => effectiveSchedule(r, folders)?.days.includes(day) && !skipsThisWeek(r, now, mondayFirst))
     .sort((a, b) => score(a) - score(b) || a.position - b.position)
 }
 
@@ -96,6 +98,6 @@ export function todayRoutines(routines: Routine[], folders: Folder[] = [], now =
  * hora más cercana a la actual; las que no tienen hora van detrás (por orden
  * de posición). null si ninguna rutina está programada para hoy.
  */
-export function todayRoutine(routines: Routine[], folders: Folder[] = [], now = Date.now()): Routine | null {
-  return todayRoutines(routines, folders, now)[0] ?? null
+export function todayRoutine(routines: Routine[], folders: Folder[] = [], now = Date.now(), mondayFirst = true): Routine | null {
+  return todayRoutines(routines, folders, now, mondayFirst)[0] ?? null
 }

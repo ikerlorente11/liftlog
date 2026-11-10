@@ -97,3 +97,34 @@ describe('deducción del horario a partir de nombres', () => {
     expect(todayRoutine(list, folders, new Date(2026, 8, 25, 19, 0).getTime())?.id).toBe('c')
   })
 })
+
+describe('todayRoutines con fases que no tocan (skip)', () => {
+  // Plan empezado el lunes 7/09/2026; el martes 10/11/2026 es la semana 10
+  const START = new Date(2026, 8, 7).getTime()
+  const TUE_W10 = new Date(2026, 10, 10, 15, 0).getTime()
+  const TUE_W9 = new Date(2026, 10, 3, 15, 0).getTime()
+  const withProgram = (r: Routine, testWeeks: number[], skipOnTest: boolean): Routine => ({
+    ...r,
+    program: {
+      totalWeeks: 24, startedAt: START,
+      phases: [
+        { weeks: testWeeks, label: 'Test', skip: skipOnTest || undefined },
+        { weeks: Array.from({ length: 24 }, (_, i) => i + 1).filter((w) => !testWeeks.includes(w)), label: 'Resto', skip: !skipOnTest || undefined },
+      ],
+    },
+  })
+  const list = [
+    withProgram(routine('series', 2, null, 'Martes · Piscina 1: series'), [9, 15], true),
+    withProgram(routine('test', 3, null, 'Test · cada 6 semanas (en vez del martes)'), [9, 15], false),
+  ]
+  it('fuera de semana de test solo marca la sesión normal', () => {
+    expect(todayRoutines(list, [], TUE_W10).map((r) => r.id)).toEqual(['series'])
+  })
+  it('en semana de test marca el test en lugar de la sesión normal', () => {
+    expect(todayRoutines(list, [], TUE_W9).map((r) => r.id)).toEqual(['test'])
+  })
+  it('un plan sin empezar no salta nada', () => {
+    const notStarted = list.map((r) => ({ ...r, program: { ...r.program!, startedAt: null } }))
+    expect(todayRoutines(notStarted, [], TUE_W10)).toHaveLength(2)
+  })
+})

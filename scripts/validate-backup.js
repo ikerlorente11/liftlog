@@ -212,6 +212,7 @@ for (const r of data.routines) {
       seen.set(w, ph.label)
     }
     if (ph.exercises) checkEntries(ph.exercises, ids, wp)
+    if (ph.skip != null && typeof ph.skip !== 'boolean') err(`${wp}: "skip" debe ser booleano`)
     if (ph.deload && ph.exercises) warn(`${wp}: "deload" se ignora cuando la fase tiene "exercises" propios`)
   }
   for (let w = 1; w <= p.totalWeeks; w++) if (!seen.has(w)) err(`${where}: la semana ${w} no está cubierta por ninguna fase`)

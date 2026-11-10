@@ -100,6 +100,13 @@ export function effectiveTargets(r: Routine, now = Date.now(), mondayFirst = tru
   return { week, started: real != null, finished, paused, pausedUntil: paused ? (p.pausedUntil as number) : null, phase, entries }
 }
 
+/** La fase de esta semana dice que la rutina no toca (plan empezado y sin terminar). */
+export function skipsThisWeek(r: Routine, now = Date.now(), mondayFirst = true): boolean {
+  if (!r.program?.phases.length) return false
+  const t = effectiveTargets(r, now, mondayFirst)
+  return t.started && !t.finished && !!t.phase?.skip
+}
+
 /** Texto corto para tarjetas: "Semana 3/24 · Bloque 1". */
 export function programChip(r: Routine, now = Date.now(), mondayFirst = true): string | null {
   const p = r.program

@@ -306,6 +306,10 @@ Reglas del programa:
      "Actualizar rutina" al terminar ni aplica `deload`.
 4. Si varias rutinas siguen el mismo calendario, todas llevan el mismo `totalWeeks` y las mismas
    semanas de descarga.
+5. **`"skip": true`** = "esta semana no toca": la rutina no se marca como la de HOY en la
+   pantalla de inicio (sigue pudiéndose abrir y empezar). Úsalo para rutinas que solo se hacen
+   algunas semanas (un test cada 6 semanas: `skip` en las demás) y en la sesión a la que
+   sustituyen esas semanas (la sesión normal lleva `skip` en las semanas de test).
 
 #### Medidas (solo si el usuario pide importar su histórico corporal)
 

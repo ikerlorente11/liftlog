@@ -77,6 +77,9 @@ export interface ProgramPhase {
   note?: string
   /** Descarga: mitad de series (calentamientos intactos) sobre los objetivos actuales */
   deload?: boolean
+  /** No toca estas semanas (p. ej. un test que solo se hace cada 6 semanas, o la
+   * sesión a la que sustituye ese test): la rutina no se marca como la de hoy */
+  skip?: boolean
   /** Objetivos propios de la fase; si falta se usan los ejercicios de la rutina */
   exercises?: ExerciseEntry[]
 }

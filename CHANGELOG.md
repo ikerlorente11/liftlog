@@ -2,6 +2,18 @@
 
 Formato: versión (versionCode) — fecha.
 
+## Pendiente de OTA — 2026-11-10
+
+- **Rutinas que no tocan esta semana** (feedback del 10/11: "la semana pasada hice el test, pero
+  esta me sigue marcando el martes normal y el test"). La rutina «Test · cada 6 semanas (en vez
+  del martes)» llevaba "martes" en el nombre y la app la daba como rutina de hoy TODOS los
+  martes. Nuevo campo opcional `skip` en las fases del programa: si la fase de la semana actual
+  lo lleva, la rutina no sale con borde/etiqueta HOY ni recibe el scroll automático (se puede
+  abrir y empezar igual; la tarjeta muestra la etiqueta de la fase). El validador lo comprueba y
+  la guía de generar planes con IA lo documenta. En el plan de Iker: Test con `skip` fuera de
+  las semanas 1/9/15/21 y Piscina 1 con `skip` en esas semanas (importado el 10/11, tiene efecto
+  cuando llegue la OTA).
+
 ## 1.3.0 OTA — 2026-09-25 (canal production, runtime 1.3.0)
 OTA publicada el 25/09 (grupo e763edd7, commit a98fbb3).
 

@@ -44,7 +44,7 @@ export default function WorkoutTab() {
   // Rutina de hoy (día de la semana + hora más cercana): al entrar en la app se
   // hace scroll hasta su tarjeta una sola vez, en cuanto está maquetada. Se mide
   // contra el contenido del ScrollView porque la tarjeta va dentro de su carpeta.
-  const todayList = useMemo(() => todayRoutines(routines, folders), [routines, folders])
+  const todayList = useMemo(() => todayRoutines(routines, folders, Date.now(), mondayFirst), [routines, folders, mondayFirst])
   const today = todayList[0] ?? null
   const todayIds = useMemo(() => new Set(todayList.map((r) => r.id)), [todayList])
   const scrollRef = useRef<ScrollView>(null)
