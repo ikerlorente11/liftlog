@@ -2,7 +2,8 @@
 
 Formato: versión (versionCode) — fecha.
 
-## Pendiente de OTA — 2026-11-10
+## 1.3.0 OTA — 2026-11-10 (canal production, runtime 1.3.0)
+OTA publicada el 10/11 (grupo 5e5a3530, commit 7283bc7).
 
 - **Rutinas que no tocan esta semana** (feedback del 10/11: "la semana pasada hice el test, pero
   esta me sigue marcando el martes normal y el test"). La rutina «Test · cada 6 semanas (en vez
