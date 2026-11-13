@@ -1,0 +1,17 @@
+{
+  "name": "LiftLog",
+  "bg_top": "#16264a", "bg_bottom": "#0b0c10", "accent": "#3d8bff",
+  "text": "#ffffff", "subtext": "#c9cdd6",
+  "icon": {"src": "icono-fuente.png", "bg": "#15161a"},
+  "feature": {"shot": "01-entreno.jpg", "tagline": ["Registra series, descansos y récords", "y mira cómo progresas"]},
+  "shots": [
+    {"file": "01-entreno.jpg", "caption": "Apunta cada serie con un toque"},
+    {"file": "02-plan.jpg", "caption": "Tu plan de entreno, semana a semana"},
+    {"file": "03-graficas.jpg", "caption": "Mira cómo suben tus marcas"},
+    {"file": "04-estadisticas.jpg", "caption": "Todo tu entrenamiento en cifras"},
+    {"file": "05-records.jpg", "caption": "Tus récords personales, al día"},
+    {"file": "06-historial.jpg", "caption": "Todo tu historial de un vistazo"},
+    {"file": "07-volumen.jpg", "caption": "Volumen y constancia cada semana"},
+    {"file": "08-ejercicios.jpg", "caption": "Casi 900 ejercicios con imágenes"}
+  ]
+}

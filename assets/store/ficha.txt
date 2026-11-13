@@ -1,0 +1,94 @@
+FICHA DE GOOGLE PLAY · LiftLog (com.ikerlorente11.liftlog)
+Idioma: español (es-ES). Los números entre paréntesis son caracteres usados / límite de Play.
+
+========================================================================
+DESCRIPCIÓN BREVE (80/80)
+========================================================================
+Registra series, descansos y récords. Planes por semanas y gráficas de progreso.
+
+========================================================================
+DESCRIPCIÓN COMPLETA (3125/4000)
+========================================================================
+LiftLog es un registro de entrenamientos de fuerza rápido y sin cuentas: crea tus rutinas, apunta cada serie con peso y repeticiones, deja que el temporizador lleve los descansos y mira cómo suben tus marcas en gráficas y récords personales. Todo se guarda en tu teléfono y funciona sin conexión.
+
+RUTINAS Y PLANES POR SEMANAS
+• Rutinas ilimitadas organizadas en carpetas, con superseries, notas y descanso propio en cada ejercicio.
+• Series de calentamiento, normales, drop sets y al fallo; objetivos de peso, repeticiones, tiempo o distancia.
+• Planes de varias semanas con bloques, descargas y semanas de test: la app sabe en qué semana estás y carga los objetivos que tocan.
+• Asigna día y hora a cada rutina: al abrir la app aparece la rutina de hoy marcada.
+• Pausa el plan en vacaciones o lesiones sin perder la cuenta de semanas.
+
+ENTRENO EN CURSO
+• Cronómetro, volumen y series completadas en tiempo real.
+• Columna «anterior» con lo que hiciste la última vez en esa misma rutina, para saber qué superar.
+• Marca una serie con un toque y arranca el descanso: cuenta atrás con −15/+15 s, vibración y aviso aunque la app esté en segundo plano o con la pantalla bloqueada.
+• Temporizador integrado para planchas, isométricos y otras series de tiempo.
+• Añade, reemplaza o reordena ejercicios sobre la marcha y minimiza el entreno para seguir usando la app.
+• Modo para apuntar a posteriori un entreno ya hecho, sin descansos automáticos.
+
+PROGRESIÓN GUIADA
+• Al terminar, resumen del entreno con los récords personales detectados automáticamente.
+• Guarda en la rutina lo que has hecho hoy con la lista exacta de cambios.
+• Sugerencias para la próxima semana: más peso, una repetición más o unos segundos más, ejercicio a ejercicio.
+• Rangos de repeticiones con doble progresión: sube repeticiones hasta el tope y entonces la app te propone subir peso.
+
+BIBLIOTECA DE EJERCICIOS
+• Casi 900 ejercicios en español con imágenes de ejecución, músculos trabajados, equipamiento e instrucciones paso a paso.
+• Búsqueda instantánea y filtros por grupo muscular y equipamiento.
+• Crea tus propios ejercicios personalizados.
+• Cada ejercicio tiene su historial, gráficas de 1RM estimado, peso máximo, volumen y repeticiones, y récords por número de repeticiones.
+
+TU PROGRESO
+• Historial de entrenos con duración, volumen, récords y resumen de la semana.
+• Perfil con gráfica de entrenos, volumen y tiempo de las últimas 8 semanas.
+• Estadísticas globales: series por grupo muscular y ejercicios más frecuentes.
+• Calendario con los días entrenados.
+• Medidas corporales: peso, composición corporal y perímetros, con dos orígenes (báscula de casa y profesional) en la misma gráfica y una pantalla de evolución con la diferencia entre mediciones.
+
+TUS DATOS, EN TU MÓVIL
+• Sin registro, sin cuenta, sin anuncios y sin seguimiento.
+• Copia de seguridad en un fichero JSON para exportar e importar cuando quieras, también rutinas sueltas para compartirlas.
+• Unidades en kg o lb y en km o millas; tema oscuro y claro.
+
+Las imágenes e instrucciones de los ejercicios proceden de la base de datos de dominio público free-exercise-db.
+
+========================================================================
+NOTAS DE LA VERSIÓN (máx. 500 cada una; de la más nueva a la más antigua)
+========================================================================
+
+--- Próxima versión (para la siguiente subida a Play) · 398/500 ---
+• Inicio en la pestaña Entreno, con la rutina de hoy destacada; el historial pasa a su propia pestaña.
+• Día y hora en cada rutina y pausa del plan por fecha.
+• Rangos de repeticiones con doble progresión y sugerencias de subida al terminar.
+• Medidas de composición corporal en % o kg y pantalla de evolución.
+• Marcar series y guardar el entreno es más rápido, y el teclado ya no tapa las series.
+
+--- 1.3.0 · 451/500 ---
+• Aviso de fin de descanso más fiable, también con la pantalla bloqueada.
+• Temporizador integrado en las series de tiempo (planchas, isométricos), con aviso al terminar.
+• Marca todas las series de un ejercicio de una vez.
+• Al terminar, propuesta de progresión para la próxima semana.
+• Descanso más corto tras los calentamientos y sin descanso tras la última serie.
+• Correcciones en el temporizador de descanso y en algunas imágenes de ejercicios.
+
+--- 1.2.0 · 436/500 ---
+• Medidas corporales con dos orígenes (báscula de casa y profesional) en una sola gráfica.
+• Puedes elegir la fecha de cada medida para meter históricos.
+• Instrucciones de todos los ejercicios en español y con imagen.
+• Apunta a posteriori un entreno ya hecho, sin descanso automático y con duración editable.
+• Borrar una serie es más fácil: mantén pulsada la fila.
+• Corregidos avisos de descanso que seguían sonando tras el entreno.
+
+--- 1.1.0 · 265/500 ---
+• Planes por semanas: bloques, descargas y semanas de test en cada rutina.
+• La tarjeta de la rutina muestra la semana actual y su fase, y puedes cambiarla.
+• Descargas automáticas: mitad de series con tus pesos actuales.
+• La copia de seguridad incluye los planes.
+
+--- 1.0.0 · 439/500 ---
+Primera versión de LiftLog:
+• Rutinas ilimitadas en carpetas, con superseries y descanso por ejercicio.
+• Entreno en curso con cronómetro, valores de la sesión anterior y temporizador de descanso con aviso.
+• Casi 900 ejercicios en español con imágenes e instrucciones; ejercicios personalizados.
+• Récords automáticos, historial, gráficas, medidas y calendario.
+• Funciona sin conexión, sin cuenta ni anuncios; copia de seguridad en JSON.
