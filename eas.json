@@ -28,6 +28,14 @@
         "credentialsSource": "local"
       },
       "channel": "production"
+    },
+    "apk": {
+      "extends": "production",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk",
+        "credentialsSource": "local"
+      }
     }
   },
   "submit": {
