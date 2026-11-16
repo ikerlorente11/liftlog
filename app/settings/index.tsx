@@ -1,4 +1,4 @@
-// Ajustes: perfil, unidades, tema, temporizador, pausa del plan, copia de seguridad, borrar datos.
+// Ajustes: perfil, unidades, tema, temporizador, pausa del plan, copia de seguridad, borrar datos, acerca de (versión y OTA).
 import DateTimePicker from '@react-native-community/datetimepicker'
 import * as DocumentPicker from 'expo-document-picker'
 import { File, Paths } from 'expo-file-system'
@@ -10,6 +10,7 @@ import { fmtDayMonth, fmtDuration, startOfDay } from '../../src/lib/format'
 import { isPaused } from '../../src/lib/program'
 import { exportAll, type BackupData } from '../../src/db/database'
 import { REST_OPTIONS } from '../../src/components/EntryEditor'
+import { AboutSection } from '../../src/components/AboutSection'
 import { ExportDialog, type ExportParts } from '../../src/components/ExportDialog'
 import { useData } from '../../src/store/dataStore'
 import { useSettings } from '../../src/store/settingsStore'
@@ -113,6 +114,9 @@ export default function SettingsScreen() {
           <ListRow icon="cloud-upload-outline" label="Exportar copia de seguridad" value={`${workouts.length} entrenos · ${routines.length} rutinas`} onPress={() => setExportSheet(true)} />
           <ListRow icon="cloud-download-outline" label="Importar copia de seguridad" onPress={() => void pickImport()} />
           <ListRow icon="trash-outline" label="Borrar todos los datos" destructive onPress={() => setConfirm({ title: '¿Borrar todos los datos?', message: 'Se eliminarán entrenos, rutinas, carpetas, medidas y ejercicios personalizados. Esta acción no se puede deshacer.', label: 'Borrar todo', onOk: () => wipeAll() })} />
+        </Group>
+        <Group title="Acerca de">
+          <AboutSection />
         </Group>
         <Text style={{ color: c.textFaint, fontSize: 12, textAlign: 'center' }}>LiftLog · datos 100 % locales · ejercicios de free-exercise-db (dominio público)</Text>
         {msg ? <Text style={{ color: c.textMuted, textAlign: 'center' }}>{msg}</Text> : null}

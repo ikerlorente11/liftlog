@@ -2,9 +2,17 @@
 
 Formato: versión (versionCode) — fecha.
 
+## Sin publicar — 2026-11-16
+
+- **Ajustes → Acerca de** (petición del 16/11: "algún sitio donde ver la info de la versión").
+  Versión y build nativas (p. ej. 1.3.0 (5)), actualización OTA en uso (fecha e identificador
+  corto del grupo, o «La de la instalación» si no hay OTA aplicada), canal y runtime, botón
+  **Buscar actualizaciones** (comprueba, descarga y reinicia al tocar, sin reabrir la app dos
+  veces) y enlace al código fuente. Solo usa expo-constants y expo-updates, que ya van en la
+  build: llega por OTA.
+
 ## 1.3.0 OTA — 2026-11-16 (canal production, runtime 1.3.0)
 OTA publicada el 16/11 (grupo 767e86f5, commit 0e9e2b3).
-
 
 - **Columna ANTERIOR con calentamientos saltados** (feedback del 16/11: "cuando dejo sin hacer
   algún calentamiento, como en la prensa, el siguiente día me cuenta parte de las series como si
