@@ -2,7 +2,9 @@
 
 Formato: versión (versionCode) — fecha.
 
-## Sin publicar — 2026-11-16
+## 1.3.0 OTA — 2026-11-16 (canal production, runtime 1.3.0)
+OTA publicada el 16/11 (grupo 75dc3713, commit 0ee3d1d). Comprobada en el móvil: la sección
+muestra 1.3.0 (5), la OTA del 16/11 con identificador 75dc3713 (el del grupo) y «Estás al día».
 
 - **Ajustes → Acerca de** (petición del 16/11: "algún sitio donde ver la info de la versión").
   Versión y build nativas (p. ej. 1.3.0 (5)), actualización OTA en uso (fecha e identificador
