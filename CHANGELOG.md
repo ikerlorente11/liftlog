@@ -2,7 +2,9 @@
 
 Formato: versión (versionCode) — fecha.
 
-## Sin publicar — 2026-11-16
+## 1.3.0 OTA — 2026-11-16 (canal production, runtime 1.3.0)
+OTA publicada el 16/11 (grupo 767e86f5, commit 0e9e2b3).
+
 
 - **Columna ANTERIOR con calentamientos saltados** (feedback del 16/11: "cuando dejo sin hacer
   algún calentamiento, como en la prensa, el siguiente día me cuenta parte de las series como si
