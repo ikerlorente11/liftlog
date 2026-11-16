@@ -11,7 +11,8 @@ export function useSupersetIndex(entries: ExerciseEntry[]): Map<string, number> 
   }, [entries])
 }
 
-/** Últimas series completadas de cada ejercicio. Si el entreno viene de una
+/** Series de la última vez de cada ejercicio (todas, hechas o no; se omite
+ * un ejercicio si no se completó ninguna). Si el entreno viene de una
  * rutina, "la última vez" es la última sesión de ESA rutina: la prensa de
  * Pierna A (5×5 pesada) no debe comparar con la de Pierna B (3×10 ligera).
  * Solo si la rutina nunca ha hecho el ejercicio se mira cualquier entreno. */
@@ -23,8 +24,9 @@ export function usePreviousSets(workouts: Workout[], routineId?: string | null, 
         if (w.id === excludeWorkoutId) continue
         for (const e of w.exercises) {
           if (m.has(e.exerciseId)) continue
-          const done = e.sets.filter((s) => s.completed)
-          if (done.length) m.set(e.exerciseId, done)
+          // Se guardan TODAS las series (también las no hechas) para poder
+          // emparejar por tipo y posición: ver matchPreviousSets.
+          if (e.sets.some((s) => s.completed)) m.set(e.exerciseId, e.sets)
         }
       }
     }

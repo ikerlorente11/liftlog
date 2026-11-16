@@ -8,6 +8,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import * as Haptics from 'expo-haptics'
 import { fmtClock, fmtDuration, fmtNum, fromDisplayDistance, fromDisplayWeight, parseClock, toDisplayDistance, toDisplayWeight } from '../lib/format'
 import { columnsFor, SET_TYPE_SHORT } from '../lib/labels'
+import { matchPreviousSets } from '../lib/previousSets'
 import { fmtPrev } from '../lib/stats'
 import { useColors } from '../theme'
 import type { Exercise, ExerciseEntry, SetData, SetType, Settings } from '../types'
@@ -219,8 +220,8 @@ export const EntryEditor = memo(function EntryEditor(p: EntryEditorProps) {
   const cols = columnsFor(type, p.settings.weightUnit, p.settings.distanceUnit)
   const timed = !!p.enableSetTimer && p.mode === 'workout' && cols.some((col) => col.key === 'duration')
   const ssColor = p.supersetIndex != null ? SUPERSET_COLORS[p.supersetIndex % SUPERSET_COLORS.length] : null
-  // "anterior": emparejamos por índice de serie de trabajo
-  const prevByIndex = useMemo(() => p.prevSets ?? [], [p.prevSets])
+  // "anterior": calentamiento n ↔ calentamiento n, efectiva n ↔ efectiva n
+  const prevByIndex = useMemo(() => matchPreviousSets(p.entry.sets, p.prevSets), [p.entry.sets, p.prevSets])
   const allDone = p.entry.sets.length > 0 && p.entry.sets.every((s) => s.completed)
 
   let normalIndex = 0
@@ -286,7 +287,7 @@ export const EntryEditor = memo(function EntryEditor(p: EntryEditorProps) {
         ) : null}
       </View>
 
-      {p.entry.sets.map((s) => {
+      {p.entry.sets.map((s, i) => {
         if (s.type === 'normal') normalIndex++
         const idx = normalIndex
         return (
@@ -297,7 +298,7 @@ export const EntryEditor = memo(function EntryEditor(p: EntryEditorProps) {
             exType={type}
             mode={p.mode}
             settings={p.settings}
-            prev={prevByIndex[p.entry.sets.indexOf(s)]}
+            prev={prevByIndex[i]}
             entryId={p.entry.id}
             setTimer={timed}
             onUpdate={(patch) => p.onUpdateSet(s.id, patch)}

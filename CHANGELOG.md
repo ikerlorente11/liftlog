@@ -2,6 +2,17 @@
 
 Formato: versión (versionCode) — fecha.
 
+## Sin publicar — 2026-11-16
+
+- **Columna ANTERIOR con calentamientos saltados** (feedback del 16/11: "cuando dejo sin hacer
+  algún calentamiento, como en la prensa, el siguiente día me cuenta parte de las series como si
+  hubiesen sido calentamiento"). Al terminar, las series sin hacer se descartan, y la columna
+  ANTERIOR emparejaba por posición: con los 2 calentamientos de la prensa saltados, hoy los
+  calentamientos mostraban 220×6 y las efectivas 4 y 5 salían vacías. Ahora empareja por tipo
+  (`matchPreviousSets`, en `src/lib/previousSets.ts`, con tests): el calentamiento n se compara
+  con el calentamiento n y la efectiva n con la efectiva n; normal, dropset y fallo cuentan como
+  efectivas. Lo que no se hizo sale en blanco. Afecta también al autorrelleno al marcar la serie.
+
 ## 1.3.0 OTA — 2026-11-10 (canal production, runtime 1.3.0)
 OTA publicada el 10/11 (grupo 5e5a3530, commit 7283bc7).
 
